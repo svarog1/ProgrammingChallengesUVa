@@ -55,7 +55,6 @@ class ShoemakerProblem10026 {
             if(skip)
             {
                 skip=false;
-                continue;
             }
             else if (!isReadNumberOfShomakers)
             {
@@ -71,7 +70,6 @@ class ShoemakerProblem10026 {
                 String[] timeFine =input.split(" ");
                 Assignement assignement =new Assignement(Integer.parseInt(timeFine[0]),Integer.parseInt(timeFine[1]));
                 if (shoemakers[shomakerToAdd].addNext(assignement)){
-
                     System.out.println(shoemakers[shomakerToAdd].getWorkOrder());
                     shomakerToAdd++;
                     skip=true;
@@ -79,6 +77,10 @@ class ShoemakerProblem10026 {
                     if (shomakerToAdd==shoemakers.length)
                     {
                         return;
+
+                    }
+                    else {
+                        System.out.println("");
                     }
                 }
             }
@@ -130,7 +132,7 @@ class ShoemakerProblem10026 {
         {
             this.time=time;
             this.fine=fine;
-            priority=fine/time;
+            priority=(double)fine/(double)time;
         }
 
         @Override
