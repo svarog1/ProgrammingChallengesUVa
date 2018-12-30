@@ -4,12 +4,12 @@ import  java.util.*;
 class Main {
     public static void main (String args[])  // entry point from OS
     {
-        ShoemakerProblem1026 myWork = new ShoemakerProblem1026();  // create a dinamic instance
+        ShoemakerProblem10026 myWork = new ShoemakerProblem10026();  // create a dinamic instance
         myWork.Begin();            // the true entry point
     }
 }
 
-class ShoemakerProblem1026 {
+class ShoemakerProblem10026 {
     static String ReadLn (int maxLg)  // utility function to read from stdin
     {
         byte lin[] = new byte [maxLg];
@@ -36,7 +36,7 @@ class ShoemakerProblem1026 {
 
     public static void main (String args[])  // entry point from OS
     {
-        ShoemakerProblem1026 myWork = new ShoemakerProblem1026();  // create a dinamic instance
+        ShoemakerProblem10026 myWork = new ShoemakerProblem10026();  // create a dinamic instance
         myWork.Begin();            // the true entry point
     }
 
@@ -50,7 +50,7 @@ class ShoemakerProblem1026 {
         Shoemaker[] shoemakers=null;
         int shomakerToAdd=0;
 
-        while ((input = ShoemakerProblem1026.ReadLn (255)) != null)
+        while ((input = ShoemakerProblem10026.ReadLn (255)) != null)
         {
             if(skip)
             {
