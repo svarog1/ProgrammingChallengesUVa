@@ -7,7 +7,7 @@ class Main {
     public static void main(String args[])  // entry point from OS
     {
         FomDuskTillDawn10187 myWork = new FomDuskTillDawn10187();  // create a dinamic instance
-        myWork.readInput();
+        myWork.start();
     }
 }
 
@@ -40,11 +40,11 @@ class FomDuskTillDawn10187 {
     public static void main(String args[])  // entry point from OS for testing
     {
         FomDuskTillDawn10187 myWork = new FomDuskTillDawn10187();  // create a dinamic instance
-        myWork.readInput();
+        myWork.start();
 
     }
 
-    public void readInput() {
+    public void start() {
         int testcase = -1;
         int currentTestcase = 0;
         int connections = -1;
@@ -98,7 +98,7 @@ class FomDuskTillDawn10187 {
 
             }
         }
-      System.out.println("");
+        System.out.println("");
     }
 
     public void print(boolean isOk, int testCasse) {
@@ -110,16 +110,18 @@ class FomDuskTillDawn10187 {
         }
     }
 
+    //Started to search for a possible way.
     public boolean findWay(City startCity, City targetCity) {
-        Queue<DepartureCity> calcCyties = new LinkedList<>();
+        //Trays one day travel after another.
+        Queue<DepartureCity> calcCities = new LinkedList<>();
         //Add first elements to queue
-        for (Connection conection : startCity.connections) {
-            ((LinkedList<DepartureCity>) calcCyties).add(new DepartureCity(startCity, 0, 0));
+        for (Connection connection : startCity.connections) {
+            ((LinkedList<DepartureCity>) calcCities).add(new DepartureCity(startCity, 0, 0));
         }
         boolean isWay = false;
         DepartureCity departureCity;
-        while (!(isWay || (departureCity = calcCyties.poll()) == null)) { //do it until a way is found or the list is empty.
-            if (calcPossibleWays(departureCity, calcCyties, targetCity)) {
+        while (!(isWay || (departureCity = calcCities.poll()) == null)) { //do it until a way is found or the list is empty.
+            if (calcPossibleWays(departureCity, calcCities, targetCity)) {
                 return true;
             }
 
@@ -144,7 +146,7 @@ class FomDuskTillDawn10187 {
         if (departureCity.city == targetCity) {
             foundCyty = true;
             found = departureCity;
-        } else if (isOneWayNotPossible && (!departureCity.city.added)) {
+        } else if (isOneWayNotPossible && (!departureCity.city.added)) {// no duplicates
             departureCity.travelDays += 1;
             departureCity.travelTimePerDay = 0;
             departureCity.city.added = true;
@@ -158,34 +160,33 @@ class FomDuskTillDawn10187 {
     //Vlads can drive onli from 1800 to 0600 so convert to 1800=0000 0600=1200
     //Converts this times to simpler times.
     public int getSimpleTime(String time) {
-        switch (time) {
-            case "18":
+        int myInt = Integer.parseInt(time)%24;
+        switch (myInt) {
+            case 18:
                 return 0;
-            case "19":
+            case 19:
                 return 1;
-            case "20":
+            case 20:
                 return 2;
-            case "21":
+            case 21:
                 return 3;
-            case "22":
+            case 22:
                 return 4;
-            case "23":
+            case 23:
                 return 5;
-            case "24":
-            case "0":
+            case 24:
+            case 0:
                 return 6;
-            case "1":
+            case 1:
                 return 7;
-            case "2":
+            case 2:
                 return 8;
-            case "3":
+            case 3:
                 return 9;
-            case "4":
+            case 4:
                 return 10;
-            case "5":
+            case 5:
                 return 11;
-            case "6":
-                return 12;
             default:
                 return -1;
         }
