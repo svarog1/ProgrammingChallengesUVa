@@ -84,15 +84,12 @@ public class RomDuskTillDawn10187 {
             } else {
                 String[] inputs = input.split(" ");
                 City startCity = citys.get(inputs[0]);
-                if (startCity == null) {
-                    if (inputs[0].equals(inputs[1])){
-                        found=new DepartureCity(null,0,0);
-                        print(true, currentTestcase);
-                    }else {
+                if (inputs[0].equals(inputs[1])){
+                    found=new DepartureCity(null,0,0);
+                    print(true, currentTestcase);
+                }
+                else if (startCity == null) {
                         print(false, currentTestcase);
-                    }
-
-
                 }
                 else {
                     print(findWay(citys.get(inputs[0]), citys.get(inputs[1])), currentTestcase);
@@ -113,6 +110,7 @@ public class RomDuskTillDawn10187 {
             print(false,currentTestcase);
             currentTestcase++;
         }
+        System.out.println("");
     }
 
     public void print(boolean isOk, int testCasse) {
@@ -146,8 +144,7 @@ public class RomDuskTillDawn10187 {
         boolean foundCyty = false;
         for (Connection connection : departureCity.city.connections) {
             if (foundCyty){break;}
-            else if (connection.targetCity.added) {
-            } else if (departureCity.travelTimePerDay <= connection.depart) {
+            else if (departureCity.travelTimePerDay <= connection.depart) {
                 foundCyty = calcPossibleWays(new DepartureCity(connection.targetCity, connection.arrive, departureCity.travelDays), calcCyties, targetCity);
             } else {
                 isOneWayNotPossible = true;
