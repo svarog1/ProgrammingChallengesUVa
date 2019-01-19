@@ -49,13 +49,13 @@ public class RomDuskTillDawn10187 {
         System.out.println("Start");
         int testcase = 0;
         int currentTestcase = 0;
-        int connections = 0;
+        int connections = -1;
         int currentConnection = 0;
         String input = "";
         while ((input = RomDuskTillDawn10187.ReadLn(255)) != null) {
             if (testcase == 0) {
                 testcase = Integer.parseInt(input);
-            } else if (connections == 0) {
+            } else if (connections == -1) {
                 connections = Integer.parseInt(input);
             } else if (currentConnection < connections) {
                 currentConnection++;
@@ -65,7 +65,7 @@ public class RomDuskTillDawn10187 {
                     continue;
                 }
                 int arriveTime = departTime + Integer.parseInt(inputs[3]);
-                if (arriveTime == -1 || departTime > arriveTime) { //Depart Time need to be always smaller else he would drive through the day.
+                if (arriveTime > 12) { //Depart Time need to be always smaller else he would drive through the day.
                     continue;
                 }
 
@@ -85,30 +85,46 @@ public class RomDuskTillDawn10187 {
                 String[] inputs = input.split(" ");
                 City startCity = citys.get(inputs[0]);
                 if (startCity == null) {
-                    print(false, 0);
-                    continue;
+                    if (inputs[0].equals(inputs[1])){
+                        found=new DepartureCity(null,0,0);
+                        print(true, currentTestcase);
+                    }else {
+                        print(false, currentTestcase);
+                    }
+
+
                 }
-                print(findWay(citys.get(inputs[0]), citys.get(inputs[1]), currentTestcase), testcase);
+                else {
+                    print(findWay(citys.get(inputs[0]), citys.get(inputs[1])), currentTestcase);
+                }
+
                 currentTestcase++;
                 currentConnection = 0;
-                connections=0;
+                connections=-1;
                 citys.clear();
 
             }
+        }
 
+        int i =1;
+        i++;
+        i=i;
+        while (testcase<currentTestcase){
+            print(false,currentTestcase);
+            currentTestcase++;
         }
     }
 
     public void print(boolean isOk, int testCasse) {
-        System.out.println("Test Case " + testCasse + ".");
+        System.out.println("Test Case " + (testCasse+1) + ".");
         if (isOk) {
             System.out.println("Vladimir needs " + found.travelDays + " litre(s) of blood.");
         } else {
-            System.out.println("There is no route Vladimir can take. ");
+            System.out.println("There is no route Vladimir can take.");
         }
     }
 
-    public boolean findWay(City startCity, City targetCity, int aktuellerTestcasse) {
+    public boolean findWay(City startCity, City targetCity) {
         Queue<DepartureCity> calcCyties = new LinkedList<>();
         //Add first elements to queue
         for (Connection conection : startCity.connections) {
@@ -129,7 +145,8 @@ public class RomDuskTillDawn10187 {
         boolean isOneWayNotPossible = false; //is needed for: Ways which are at the moment not possible.
         boolean foundCyty = false;
         for (Connection connection : departureCity.city.connections) {
-            if (connection.targetCity.added) {
+            if (foundCyty){break;}
+            else if (connection.targetCity.added) {
             } else if (departureCity.travelTimePerDay <= connection.depart) {
                 foundCyty = calcPossibleWays(new DepartureCity(connection.targetCity, connection.arrive, departureCity.travelDays), calcCyties, targetCity);
             } else {
@@ -142,7 +159,7 @@ public class RomDuskTillDawn10187 {
             foundCyty = true;
             found = departureCity;
         }
-        if (isOneWayNotPossible && !departureCity.city.added) {
+        else if (isOneWayNotPossible && (!departureCity.city.added)) {
             departureCity.travelDays += 1;
             departureCity.travelTimePerDay = 0;
             departureCity.city.added=true;
