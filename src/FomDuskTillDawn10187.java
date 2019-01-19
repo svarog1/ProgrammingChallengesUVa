@@ -6,13 +6,12 @@ import java.util.Queue;
 class Main {
     public static void main(String args[])  // entry point from OS
     {
-        RomDuskTillDawn10187 myWork = new RomDuskTillDawn10187();  // create a dinamic instance
+        FomDuskTillDawn10187 myWork = new FomDuskTillDawn10187();  // create a dinamic instance
         myWork.readInput();
     }
 }
 
-
-public class RomDuskTillDawn10187 {
+class FomDuskTillDawn10187 {
 
     HashMap<String, City> citys = new HashMap<>(100);
     DepartureCity found;
@@ -40,20 +39,20 @@ public class RomDuskTillDawn10187 {
 
     public static void main(String args[])  // entry point from OS for testing
     {
-        RomDuskTillDawn10187 myWork = new RomDuskTillDawn10187();  // create a dinamic instance
+        FomDuskTillDawn10187 myWork = new FomDuskTillDawn10187();  // create a dinamic instance
         myWork.readInput();
 
     }
 
     public void readInput() {
         System.out.println("Start");
-        int testcase = 0;
+        int testcase = -1;
         int currentTestcase = 0;
         int connections = -1;
         int currentConnection = 0;
         String input = "";
-        while ((input = RomDuskTillDawn10187.ReadLn(255)) != null) {
-            if (testcase == 0) {
+        while ( (input = FomDuskTillDawn10187.ReadLn(255)) != null) {
+            if (testcase == -1) {
                 testcase = Integer.parseInt(input);
             } else if (connections == -1) {
                 connections = Integer.parseInt(input);
@@ -84,37 +83,27 @@ public class RomDuskTillDawn10187 {
             } else {
                 String[] inputs = input.split(" ");
                 City startCity = citys.get(inputs[0]);
-                if (inputs[0].equals(inputs[1])){
-                    found=new DepartureCity(null,0,0);
+                if (inputs[0].equals(inputs[1])) {
+                    found = new DepartureCity(null, 0, 0);
                     print(true, currentTestcase);
-                }
-                else if (startCity == null) {
-                        print(false, currentTestcase);
-                }
-                else {
+                } else if (startCity == null) {
+                    print(false, currentTestcase);
+                } else {
                     print(findWay(citys.get(inputs[0]), citys.get(inputs[1])), currentTestcase);
                 }
 
                 currentTestcase++;
                 currentConnection = 0;
-                connections=-1;
+                connections = -1;
                 citys.clear();
 
             }
         }
-
-        int i =1;
-        i++;
-        i=i;
-        while (testcase<currentTestcase){
-            print(false,currentTestcase);
-            currentTestcase++;
-        }
-        System.out.println("");
+       System.out.println("");
     }
 
     public void print(boolean isOk, int testCasse) {
-        System.out.println("Test Case " + (testCasse+1) + ".");
+        System.out.println("Test Case " + (testCasse + 1) + ".");
         if (isOk) {
             System.out.println("Vladimir needs " + found.travelDays + " litre(s) of blood.");
         } else {
@@ -143,8 +132,9 @@ public class RomDuskTillDawn10187 {
         boolean isOneWayNotPossible = false; //is needed for: Ways which are at the moment not possible.
         boolean foundCyty = false;
         for (Connection connection : departureCity.city.connections) {
-            if (foundCyty){break;}
-            else if (departureCity.travelTimePerDay <= connection.depart) {
+            if (foundCyty) {
+                break;
+            } else if (departureCity.travelTimePerDay <= connection.depart) {
                 foundCyty = calcPossibleWays(new DepartureCity(connection.targetCity, connection.arrive, departureCity.travelDays), calcCyties, targetCity);
             } else {
                 isOneWayNotPossible = true;
@@ -155,11 +145,10 @@ public class RomDuskTillDawn10187 {
         if (departureCity.city == targetCity) {
             foundCyty = true;
             found = departureCity;
-        }
-        else if (isOneWayNotPossible && (!departureCity.city.added)) {
+        } else if (isOneWayNotPossible && (!departureCity.city.added)) {
             departureCity.travelDays += 1;
             departureCity.travelTimePerDay = 0;
-            departureCity.city.added=true;
+            departureCity.city.added = true;
             calcCyties.add(departureCity);
         }
         return foundCyty;
@@ -203,41 +192,42 @@ public class RomDuskTillDawn10187 {
         }
     }
 
+    class DepartureCity {
+        int travelTimePerDay;
+        int travelDays = 0;
+        City city;
 
-}
-
-class DepartureCity {
-    int travelTimePerDay;
-    int travelDays = 0;
-    City city;
-
-    public DepartureCity(City cityName, int travelTime, int travelDays) {
-        this.city = cityName;
-        this.travelTimePerDay = travelTime;
-        this.travelDays = travelDays;
+        public DepartureCity(City cityName, int travelTime, int travelDays) {
+            this.city = cityName;
+            this.travelTimePerDay = travelTime;
+            this.travelDays = travelDays;
+        }
     }
-}
 
-class Connection {
-    public City targetCity;
-    int depart, arrive, travelTime;
+    class Connection {
+        public City targetCity;
+        int depart, arrive, travelTime;
 
-    public Connection(City targetCity, int depart, int arrive) {
-        this.depart = depart;
-        this.arrive = arrive;
-        this.targetCity = targetCity;
+        public Connection(City targetCity, int depart, int arrive) {
+            this.depart = depart;
+            this.arrive = arrive;
+            this.targetCity = targetCity;
+        }
     }
-}
 
-class City {
-    public String cityName;
-    public boolean added = false;
-    public LinkedList<Connection> connections = new LinkedList<>();
+    class City {
+        public String cityName;
+        public boolean added = false;
+        public LinkedList<Connection> connections = new LinkedList<>();
 
-    public City(String cityName) {
-        this.cityName = cityName;
+        public City(String cityName) {
+            this.cityName = cityName;
+        }
     }
+
 }
+
+
 
 
 
