@@ -45,13 +45,12 @@ class FomDuskTillDawn10187 {
     }
 
     public void readInput() {
-        System.out.println("Start");
         int testcase = -1;
         int currentTestcase = 0;
         int connections = -1;
         int currentConnection = 0;
         String input = "";
-        while ( (input = FomDuskTillDawn10187.ReadLn(255)) != null) {
+        while ((input = FomDuskTillDawn10187.ReadLn(255)) != null) {
             if (testcase == -1) {
                 testcase = Integer.parseInt(input);
             } else if (connections == -1) {
@@ -99,7 +98,7 @@ class FomDuskTillDawn10187 {
 
             }
         }
-       System.out.println("");
+      System.out.println("");
     }
 
     public void print(boolean isOk, int testCasse) {
