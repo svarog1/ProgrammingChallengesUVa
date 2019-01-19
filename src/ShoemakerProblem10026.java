@@ -42,42 +42,34 @@ class ShoemakerProblem10026 {
         boolean isReadNumberOfShoemakers = false;
         boolean skip = false;
 
-        Shoemaker[] shoemakers = null;
-        int shoemakerToAdd = 0;
+        int numberOfShoemaker = 0;
+        int currentShoemaker=0;
+        Shoemaker shomaker = null;
 
         //Read the inputs and generate classes.
         while ((input = ShoemakerProblem10026.ReadLn(255)) != null) {
             if (skip) {//skip empty column
                 skip = false;
             } else if (!isReadNumberOfShoemakers) {//Read the number of shoemakers
-                shoemakers = new Shoemaker[Integer.parseInt(input)];
                 isReadNumberOfShoemakers = true;
                 skip = true;
+                numberOfShoemaker = Integer.parseInt(input);
             } else if (!isReadNumberOfAssignments) { //read number of assignments for the active shoemaker
-                shoemakers[shoemakerToAdd] = new Shoemaker(Integer.parseInt(input));
+                shomaker = new Shoemaker(Integer.parseInt(input));
                 isReadNumberOfAssignments = true;
             } else { //Generate the Shoemakers and the Assignments
                 String[] timeFine = input.split(" ");
                 Assignment assignment = new Assignment(Integer.parseInt(timeFine[0]), Integer.parseInt(timeFine[1]));
-                if (shoemakers[shoemakerToAdd].addNext(assignment)) {// When the last Assignment go in the if
-                    shoemakerToAdd++;
+                if (shomaker.addNext(assignment)) {// When the last Assignment go in the if
+                    currentShoemaker++;
                     skip = true;
                     isReadNumberOfAssignments = false;
-                    if (shoemakerToAdd==shoemakers.length){break;}
-                }
-            }
-        }
+                    shomaker.printWorkOrder();
 
-        //Creat the correct output.
-        int counter=0;
-        while (true){
-            shoemakers[counter].printWorkOrder();
-            counter++;
-            if (counter<shoemakers.length) {
-                System.out.println("");
-            }
-            else {
-                break;
+
+                    if (numberOfShoemaker==currentShoemaker){break;}
+                    else {System.out.println("");}
+                }
             }
         }
     }
@@ -109,7 +101,7 @@ class ShoemakerProblem10026 {
                 }
 
             }
-            System.out.println( sb.toString());
+            System.out.println(sb.toString());
         }
 
     }

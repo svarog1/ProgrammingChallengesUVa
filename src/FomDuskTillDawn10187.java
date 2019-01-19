@@ -98,7 +98,6 @@ class FomDuskTillDawn10187 {
 
             }
         }
-        System.out.println("");
     }
 
     public void print(boolean isOk, int testCasse) {
