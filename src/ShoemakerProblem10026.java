@@ -1,13 +1,13 @@
 import java.io.*;
 import java.util.*;
 
-class Main {
+/*class Main {
     public static void main(String args[])  // entry point from OS
     {
         ShoemakerProblem10026 myWork = new ShoemakerProblem10026();  // create a dinamic instance
         myWork.Begin();            // the true entry point
     }
-}
+}*/
 
 class ShoemakerProblem10026 {
     static String ReadLn(int maxLg)  // utility function to read from stdin
