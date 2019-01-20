@@ -4,8 +4,7 @@ import java.util.*;
 /*class Main {
     public static void main(String args[])  // entry point from OS
     {
-        ShoemakerProblem10026 myWork = new ShoemakerProblem10026();  // create a dinamic instance
-        myWork.Begin();            // the true entry point
+        ShoemakerProblem10026.Begin();
     }
 }*/
 
@@ -32,11 +31,10 @@ class ShoemakerProblem10026 {
 
     public static void main(String args[])  // entry point from OS for testing
     {
-        ShoemakerProblem10026 myWork = new ShoemakerProblem10026();  // create a dinamic instance
-        myWork.Begin();            // the true entry point
+        ShoemakerProblem10026.Begin();
     }
 
-    void Begin() {
+    public static void Begin() {
         String input;
         boolean isReadNumberOfAssignments = false;
         boolean isReadNumberOfShoemakers = false;
@@ -74,51 +72,51 @@ class ShoemakerProblem10026 {
         }
     }
 
-    class Shoemaker {
-        int toAdd = 0;
-        Assignment[] assignments;
 
-        Shoemaker(int numberOfAssignements) {
-            assignments = new Assignment[numberOfAssignements];
-        }
+}
+class Shoemaker {
+    int toAdd = 0;
+    Assignment[] assignments;
 
-        //return was last entry ==true
-        boolean addNext(Assignment assignment) {
-            assignment.position = toAdd + 1;
-            assignments[toAdd] = assignment;
-            toAdd++;
-            return (toAdd == assignments.length);
-        }
-
-        void printWorkOrder() {
-            StringBuilder sb = new StringBuilder();
-            Arrays.sort(assignments);
-            for (int i = 0; i < assignments.length; i++) {
-                if (i == assignments.length - 1) {
-                    sb.append(assignments[i].position);
-                } else {
-                    sb.append(assignments[i].position).append(" ");
-                }
-
-            }
-            System.out.println(sb.toString());
-        }
-
+    Shoemaker(int numberOfAssignements) {
+        assignments = new Assignment[numberOfAssignements];
     }
 
-    class Assignment implements Comparable<Assignment> {
-        final double priority;
-        int position;
+    //return was last entry ==true
+    boolean addNext(Assignment assignment) {
+        assignment.position = toAdd + 1;
+        assignments[toAdd] = assignment;
+        toAdd++;
+        return (toAdd == assignments.length);
+    }
 
-        private Assignment(int time, int fine) {
-            priority = (double) fine / (double) time;
+    void printWorkOrder() {
+        StringBuilder sb = new StringBuilder();
+        Arrays.sort(assignments);
+        for (int i = 0; i < assignments.length; i++) {
+            if (i == assignments.length - 1) {
+                sb.append(assignments[i].position);
+            } else {
+                sb.append(assignments[i].position).append(" ");
+            }
+
         }
+        System.out.println(sb.toString());
+    }
 
-        @Override
-        public int compareTo(Assignment a) {
-            return Double.compare(a.priority, this.priority);
-        }
+}
 
+class Assignment implements Comparable<Assignment> {
+    final double priority;
+    int position;
+
+    public Assignment(int time, int fine) {
+        priority = (double) fine / (double) time;
+    }
+
+    @Override
+    public int compareTo(Assignment a) {
+        return Double.compare(a.priority, this.priority);
     }
 
 }

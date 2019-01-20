@@ -3,18 +3,15 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
 
-class Main {
+/*class Main {
     public static void main(String args[])  // entry point from OS
     {
-        FomDuskTillDawn10187 myWork = new FomDuskTillDawn10187();  // create a dinamic instance
-        myWork.start();
+        FomDuskTillDawn10187.start();
     }
-}
+}*/
 
 class FomDuskTillDawn10187 {
 
-    HashMap<String, City> citys = new HashMap<>(100); //All citys on a map
-    DepartureCity found; // Wen a result is found it is saved her.
 
     static String ReadLn(int maxLg)  // utility function to read from stdin
     {
@@ -38,12 +35,12 @@ class FomDuskTillDawn10187 {
 
     public static void main(String args[])  // entry point from OS for testing
     {
-        FomDuskTillDawn10187 myWork = new FomDuskTillDawn10187();  // create a dinamic instance
-        myWork.start();
-
+        FomDuskTillDawn10187.start();
     }
 
-    public void start() {
+    public static void start() {
+        HashMap<String, City> citys = new HashMap<>(100); //All citys on a map
+        DepartureCity found; // Wen a result is found it is saved her.
         int testcase = -1;
         int currentTestcase = 0;
         int connections = -1;
@@ -85,12 +82,11 @@ class FomDuskTillDawn10187 {
                 String[] inputs = input.split(" ");
                 City startCity = citys.get(inputs[0]);
                 if (inputs[0].equals(inputs[1])) {
-                    found = new DepartureCity(null, 0, 0);
-                    print(true, currentTestcase);
+                    print( currentTestcase,0);
                 } else if (startCity == null) {
-                    print(false, currentTestcase);
+                    print( currentTestcase,-1);
                 } else {
-                    print(findWay(citys.get(inputs[0]), citys.get(inputs[1])), currentTestcase);
+                    print( currentTestcase, findWay(citys.get(inputs[0]), citys.get(inputs[1])));
                 }
 
                 currentTestcase++;
@@ -102,17 +98,18 @@ class FomDuskTillDawn10187 {
         }
     }
 
-    public void print(boolean isOk, int testCase) {
+    public static void print(int testCase, int days) {
         System.out.println("Test Case " + (testCase + 1) + ".");
-        if (isOk) {
-            System.out.println("Vladimir needs " + found.travelDays + " litre(s) of blood.");
+        if (days>=0) {
+            System.out.println("Vladimir needs " + days + " litre(s) of blood.");
         } else {
             System.out.println("There is no route Vladimir can take.");
         }
     }
 
     //Started to search for a possible way.
-    public boolean findWay(City startCity, City targetCity) {
+    //-1 no way found.
+    public static int findWay(City startCity, City targetCity) {
         //Trays one day travel after another.
         Queue<DepartureCity> calcCities = new LinkedList<>();
         //Add first elements to queue
@@ -123,21 +120,21 @@ class FomDuskTillDawn10187 {
         DepartureCity departureCity;
         while (!(isWay || (departureCity = calcCities.poll()) == null)) { //do it until a way is found or the list is empty.
             if (calcPossibleWays(departureCity, calcCities, targetCity)) {
-                return true;
+                return  departureCity.travelDays;
             }
 
         }
-        return false;
+        return -1;
     }
+
     //Trays all ways within a day. Adds the new found cities to calcCities. Increases the traveled day counter per DepartureCity.
-    public boolean calcPossibleWays(DepartureCity departureCity, Queue<DepartureCity> calcCities, City targetCity) {
+    public static boolean calcPossibleWays(DepartureCity departureCity, Queue<DepartureCity> calcCities, City targetCity) {
         boolean isOneWayNotPossible = false; //is needed for: Ways which are at the moment not possible.
-        boolean foundCity = false;
         for (Connection connection : departureCity.city.connections) {
-            if (foundCity) { // A city has already been found finish.
-                break;
-            } else if (departureCity.travelTimePerDay <= connection.depart) { //This connection can be made before 6:00
-                foundCity = calcPossibleWays(new DepartureCity(connection.targetCity, connection.arrive, departureCity.travelDays), calcCities, targetCity);
+            if (departureCity.travelTimePerDay <= connection.depart) { //This connection can be made before 6:00
+                if (calcPossibleWays(new DepartureCity(connection.targetCity, connection.arrive, departureCity.travelDays), calcCities, targetCity)) {
+                    return true;
+                }
             } else { //This connection can't be reached before 6:00. Ned to tray this on the next day.
                 isOneWayNotPossible = true; //1 city should just be added once.
             }
@@ -145,22 +142,21 @@ class FomDuskTillDawn10187 {
 
 
         if (departureCity.city == targetCity) {
-            foundCity = true;
-            found = departureCity;
+            return true;
         } else if (isOneWayNotPossible && (!departureCity.city.added)) {// no duplicates. Next day starting city.
             departureCity.travelDays += 1;
             departureCity.travelTimePerDay = 0;
             departureCity.city.added = true;
             calcCities.add(departureCity);
         }
-        return foundCity;
+        return false;
 
     }
 
 
     //Vlads can drive onli from 1800 to 0600 so convert to 1800=0000 0600=1200
     //Converts this times to simpler times.
-    public int getSimpleTime(String time) {
+    public static int getSimpleTime(String time) {
         int myInt = Integer.parseInt(time) % 24;
         switch (myInt) {
             case 18:
@@ -193,39 +189,40 @@ class FomDuskTillDawn10187 {
         }
     }
 
-    class DepartureCity {
-        int travelTimePerDay;
-        int travelDays = 0;
-        City city;
 
-        public DepartureCity(City cityName, int travelTime, int travelDays) {
-            this.city = cityName;
-            this.travelTimePerDay = travelTime;
-            this.travelDays = travelDays;
-        }
+}
+
+class DepartureCity {
+    int travelTimePerDay;
+    int travelDays = 0;
+    City city;
+
+    public DepartureCity(City cityName, int travelTime, int travelDays) {
+        this.city = cityName;
+        this.travelTimePerDay = travelTime;
+        this.travelDays = travelDays;
     }
+}
 
-    class Connection {
-        public City targetCity;
-        int depart, arrive, travelTime;
+class Connection {
+    public City targetCity;
+    int depart, arrive;
 
-        public Connection(City targetCity, int depart, int arrive) {
-            this.depart = depart;
-            this.arrive = arrive;
-            this.targetCity = targetCity;
-        }
+    public Connection(City targetCity, int depart, int arrive) {
+        this.depart = depart;
+        this.arrive = arrive;
+        this.targetCity = targetCity;
     }
+}
 
-    class City {
-        public String cityName;
-        public boolean added = false;
-        public LinkedList<Connection> connections = new LinkedList<>();
+class City {
+    public String cityName;
+    public boolean added = false;
+    public LinkedList<Connection> connections = new LinkedList<>();
 
-        public City(String cityName) {
-            this.cityName = cityName;
-        }
+    public City(String cityName) {
+        this.cityName = cityName;
     }
-
 }
 
 
