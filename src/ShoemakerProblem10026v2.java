@@ -1,12 +1,12 @@
 import java.io.*;
 import java.util.*;
 
-class Main {
+/*class Main {
     public static void main(String args[])  // entry point from OS
     {
         ShoemakerProblem10026v2.begin();
     }
-}
+}*/
 
 class ShoemakerProblem10026v2 {
 
