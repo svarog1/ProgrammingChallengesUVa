@@ -1,12 +1,12 @@
 import java.io.*;
 import java.util.*;
 
-class Main {
+/*class Main {
     public static void main(String args[])  // entry point from OS
     {
         ShoemakerProblem10026.Begin();
     }
-}
+}*/
 
 class ShoemakerProblem10026 {
     static String ReadLn(int maxLg)  // utility function to read from stdin

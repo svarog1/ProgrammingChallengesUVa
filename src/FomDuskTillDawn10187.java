@@ -1,14 +1,22 @@
+//Lösung Ansatz:
+//Vlad kann jeden Tag 12 Stunden reisen. Somit sollen alle Städte die er innerhalb von 12 h erreicht abgespeichert
+// und als neue Ausgangspunkte für den nächsten Tag verwendet werden. Die Stadt soll nur bei ersten möglichen Ankunft in die Liste gespeichert werden.
+//Verwendeter Algorithmus BFS
+//Abspeichern der Knoten und Kanten wurde das Adjiazenzlisten Prinzip verwendet.
+
+
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
 
-/*class Main {
+class Main {
     public static void main(String args[])  // entry point from OS
     {
         FomDuskTillDawn10187.start();
     }
-}*/
+}
 
 class FomDuskTillDawn10187 {
 
@@ -39,8 +47,7 @@ class FomDuskTillDawn10187 {
     }
 
     public static void start() {
-        HashMap<String, City> citys = new HashMap<>(100); //All citys on a map
-        DepartureCity found; // Wen a result is found it is saved her.
+        HashMap<String, City> cites = new HashMap<>(100); //All cities on a map
         int testcase = -1;
         int currentTestcase = 0;
         int connections = -1;
@@ -64,35 +71,35 @@ class FomDuskTillDawn10187 {
                 }
 
                 //Create new city.
-                if (!citys.containsKey(inputs[0])) {
-                    citys.put(inputs[0], new City(inputs[0]));
+                if (!cites.containsKey(inputs[0])) {
+                    cites.put(inputs[0], new City(inputs[0]));
                 }
 
                 //Create new city for the target.
                 City targetCity;
-                if ((targetCity = citys.get(inputs[1])) == null) {
+                if ((targetCity = cites.get(inputs[1])) == null) {
                     targetCity = new City(inputs[1]);
-                    citys.put(inputs[1], targetCity);
+                    cites.put(inputs[1], targetCity);
                 }
 
-                //add the connection to the city. Also adds the targetCity (reference) to the connection.
-                citys.get(inputs[0]).connections.add(new Connection(targetCity, departTime, arriveTime));
+                //add the connection to the city. Also adds the target City (reference) to the connection.
+                cites.get(inputs[0]).connections.add(new Connection(targetCity, departTime, arriveTime));
             } else {
                 //Searches the city.
                 String[] inputs = input.split(" ");
-                City startCity = citys.get(inputs[0]);
+                City startCity = cites.get(inputs[0]);
                 if (inputs[0].equals(inputs[1])) {
-                    print( currentTestcase,0);
+                    print(currentTestcase, 0);
                 } else if (startCity == null) {
-                    print( currentTestcase,-1);
+                    print(currentTestcase, -1);
                 } else {
-                    print( currentTestcase, findWay(citys.get(inputs[0]), citys.get(inputs[1])));
+                    print(currentTestcase, findWay(cites.get(inputs[0]), cites.get(inputs[1])));
                 }
 
                 currentTestcase++;
                 currentConnection = 0;
                 connections = -1;
-                citys.clear();
+                cites.clear();
 
             }
         }
@@ -100,7 +107,7 @@ class FomDuskTillDawn10187 {
 
     public static void print(int testCase, int days) {
         System.out.println("Test Case " + (testCase + 1) + ".");
-        if (days>=0) {
+        if (days >= 0) {
             System.out.println("Vladimir needs " + days + " litre(s) of blood.");
         } else {
             System.out.println("There is no route Vladimir can take.");
@@ -110,43 +117,52 @@ class FomDuskTillDawn10187 {
     //Started to search for a possible way.
     //-1 no way found.
     public static int findWay(City startCity, City targetCity) {
-        //Trays one day travel after another.
-        Queue<DepartureCity> calcCities = new LinkedList<>();
+        //Try one day travel after another.
+        Queue<City> calcCities1 = new LinkedList<>();
+        Queue<City> calcCities2 = new LinkedList<>();
+        int days = 0;
         //Add first elements to queue
         for (Connection connection : startCity.connections) {
-            ((LinkedList<DepartureCity>) calcCities).add(new DepartureCity(startCity, 0, 0));
+            ((LinkedList<City>) calcCities1).add(startCity);
         }
         boolean isWay = false;
-        DepartureCity departureCity;
-        while (!(isWay || (departureCity = calcCities.poll()) == null)) { //do it until a way is found or the list is empty.
-            if (calcPossibleWays(departureCity, calcCities, targetCity)) {
-                return  departureCity.travelDays;
+        City departureCity;
+        //goes through 2 list. every list has entries from the same day. Simplification for day counter.
+        while (calcCities1.size() > 0) {
+            while (!(isWay || (departureCity = calcCities1.poll()) == null)) {
+                if (calcPossibleWays(departureCity, calcCities2, targetCity, 0)) {
+                    return days;
+                }
             }
-
+            days++;
+            while (!(isWay || (departureCity = calcCities2.poll()) == null)) {
+                if (calcPossibleWays(departureCity, calcCities1, targetCity, 0)) {
+                    return days;
+                }
+            }
+            days++;
         }
         return -1;
     }
 
-    //Trays all ways within a day. Adds the new found cities to calcCities. Increases the traveled day counter per DepartureCity.
-    public static boolean calcPossibleWays(DepartureCity departureCity, Queue<DepartureCity> calcCities, City targetCity) {
-        boolean isOneWayNotPossible = false; //is needed for: Ways which are at the moment not possible.
-        for (Connection connection : departureCity.city.connections) {
-            if (departureCity.travelTimePerDay <= connection.depart) { //This connection can be made before 6:00
-                if (calcPossibleWays(new DepartureCity(connection.targetCity, connection.arrive, departureCity.travelDays), calcCities, targetCity)) {
+    //Trays all ways within a day. Adds the new found cities to calcCities 1 or 2. Increases the traveled day counter.
+    public static boolean calcPossibleWays(City departureCity, Queue<City> calcCities, City targetCity, int travelTimeToday) {
+        if (departureCity == targetCity) {
+            return true;
+        }
+        boolean isOneWayNotPossible = false; //Is needed for: Ways which are at the moment not possible.
+        for (Connection connection : departureCity.connections) {
+            if (travelTimeToday <= connection.depart) { //This connection can be made before 6:00
+                if (calcPossibleWays(connection.targetCity, calcCities, targetCity, connection.arrive)) {
                     return true;
                 }
-            } else { //This connection can't be reached before 6:00. Ned to tray this on the next day.
-                isOneWayNotPossible = true; //1 city should just be added once.
+            } else { //This connection can't be reached before 6:00. Need to try this next day.
+                isOneWayNotPossible = true; //City should just be added once.
             }
         }
 
-
-        if (departureCity.city == targetCity) {
-            return true;
-        } else if (isOneWayNotPossible && (!departureCity.city.added)) {// no duplicates. Next day starting city.
-            departureCity.travelDays += 1;
-            departureCity.travelTimePerDay = 0;
-            departureCity.city.added = true;
+        if (isOneWayNotPossible && (!departureCity.added)) {// no duplicates.
+            departureCity.added = true;
             calcCities.add(departureCity);
         }
         return false;
@@ -154,7 +170,7 @@ class FomDuskTillDawn10187 {
     }
 
 
-    //Vlads can drive onli from 1800 to 0600 so convert to 1800=0000 0600=1200
+    //Vlad can drive only from 1800 to 0600 so convert to 1800=0000 0600=1200
     //Converts this times to simpler times.
     public static int getSimpleTime(String time) {
         int myInt = Integer.parseInt(time) % 24;
@@ -192,17 +208,6 @@ class FomDuskTillDawn10187 {
 
 }
 
-class DepartureCity {
-    int travelTimePerDay;
-    int travelDays = 0;
-    City city;
-
-    public DepartureCity(City cityName, int travelTime, int travelDays) {
-        this.city = cityName;
-        this.travelTimePerDay = travelTime;
-        this.travelDays = travelDays;
-    }
-}
 
 class Connection {
     public City targetCity;
