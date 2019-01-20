@@ -1,5 +1,3 @@
-import jdk.nashorn.internal.ir.Assignment;
-
 import java.io.*;
 import java.util.*;
 
@@ -27,7 +25,7 @@ class ShoemakerProblem10026v3 {
 
     }
 
-    static String ReadLn(int maxLg)  // utility function to read from stdin
+    static String readLn(int maxLg)  // utility function to read from stdin
     {
         byte lin[] = new byte[maxLg];
         int lg = 0, car = -1;
@@ -65,7 +63,7 @@ class ShoemakerProblem10026v3 {
         Assignmentv3[] assigments= null;
 
         //Read the inputs and generate classes.
-        while ((input = ShoemakerProblem10026v3.ReadLn(255)) != null) {
+        while ((input = ShoemakerProblem10026v3.readLn(255)) != null) {
             if (skip) {//skip empty column
                 skip = false;
             } else if (!isReadNumberOfShoemakers) {//Read the number of shoemakers

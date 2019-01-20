@@ -14,11 +14,11 @@ import java.util.Queue;
 class Main {
     public static void main(String args[])  // entry point from OS
     {
-        FomDuskTillDawn10187.start();
+        FromDuskTillDawn10187.start();
     }
 }
 
-class FomDuskTillDawn10187 {
+class FromDuskTillDawn10187 {
 
 
     static String ReadLn(int maxLg)  // utility function to read from stdin
@@ -43,7 +43,7 @@ class FomDuskTillDawn10187 {
 
     public static void main(String args[])  // entry point from OS for testing
     {
-        FomDuskTillDawn10187.start();
+        FromDuskTillDawn10187.start();
     }
 
     public static void start() {
@@ -53,7 +53,7 @@ class FomDuskTillDawn10187 {
         int connections = -1;
         int currentConnection = 0;
         String input = "";
-        while ((input = FomDuskTillDawn10187.ReadLn(255)) != null) {
+        while ((input = FromDuskTillDawn10187.ReadLn(255)) != null) {
             if (testcase == -1) { //Saves how many test case there are.
                 testcase = Integer.parseInt(input);
             } else if (connections == -1) { //Saves how many connections there are for a test case.
@@ -127,7 +127,7 @@ class FomDuskTillDawn10187 {
         }
         boolean isWay = false;
         City departureCity;
-        //goes through 2 list. every list has entries from the same day. Simplification for day counter.
+        //goes through 2 list. every list has entries from the same day.Simplification for day counter.
         while (calcCities1.size() > 0) {
             while (!(isWay || (departureCity = calcCities1.poll()) == null)) {
                 if (calcPossibleWays(departureCity, calcCities2, targetCity, 0)) {
