@@ -1,20 +1,17 @@
 package LongestNap;
 
 import java.io.IOException;
-import java.util.Date;
+import java.util.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
-import java.util.PriorityQueue;
-import java.util.SimpleTimeZone;
-import java.util.TimeZone;
 
 class Main {
     public static void main(String args[])  // entry point from OS
     {
         try {
             LongestNap10191.start();
-        } catch (ParseException e){
+        } catch (ParseException e) {
 
         }
 
@@ -46,152 +43,117 @@ public class LongestNap10191 {
         return (new String(lin, 0, lg));
     }
 
-    static SimpleDateFormat formater;
     public static void start() throws ParseException {
-        formater = new SimpleDateFormat("HH:mm");
-        formater.setTimeZone(new SimpleTimeZone(0,"no Timezone"));
         String input = "";
         int cDay = 0; //current test case day
         Day day = null;
         int numberOfAppointmentsLeft = 0;
-        while ((input = LongestNap10191.ReadLn(255))!=null){
-            if (numberOfAppointmentsLeft==0){
+        while ((input = LongestNap10191.ReadLn(255)) != null) {
+            if (numberOfAppointmentsLeft == 0) {
                 cDay++;
                 numberOfAppointmentsLeft = Integer.parseInt(input);
                 day = new Day(cDay);
                 continue;
             } else {
-                day.appointments.add(new Day.Appointment(input.substring(0,5),input.substring(6,11)));
+                day.addAppointment(convertTimeStringToInt(input.substring(0, 5)), convertTimeStringToInt(input.substring(6, 11)));
                 numberOfAppointmentsLeft--;
             }
 
-            if(numberOfAppointmentsLeft==0){
+            if (numberOfAppointmentsLeft == 0) {
                 day.calcLongestNapTime();
             }
         }
+    }
+
+    //Converts time string HH:mm to an integer
+    static int convertTimeStringToInt(String time) {
+        int timeInMinutes = Integer.parseInt(time.substring(0, 2)) * 60;
+        int timeInMinuts2=Integer.parseInt(time.substring(3,5 ));
+        return timeInMinutes + Integer.parseInt(time.substring(3, 5));
+    }
+
+    static void print(int day, int napStart, int duration) {
+        //Convert napStart int to the needed String
+        int napStartHours = napStart / 60;
+        String sNapStart = "";
+        if (napStart > 9) {
+            sNapStart =Integer.toString(napStartHours);
+        } else{
+            sNapStart = "0"+napStartHours;
+        }
+        sNapStart+=":";
+        int napStartMinutes =napStart-napStartHours*60;
+        if (napStartMinutes>9){
+            sNapStart +=Integer.toString(napStartMinutes);
+        }else{
+            sNapStart += "0"+napStartMinutes;
+        }
+
+        //Convert the duration to the needed duration.
+        String durationString="";
+        int durationHours = duration/60;
+        if (durationHours>0){
+            durationString = durationHours + " hours and " + (duration-durationHours*60) +" minutes.";
+        } else{
+            durationString = duration + " minutes.";
+        }
+
+        System.out.println("Day #"+day+": the longest nap starts at "+sNapStart+ " and will last for " +durationString);
 
     }
 
-    static void print(int day, Date napStart, long duration){
-        String sNapStart=napStart.getHours()+":"+napStart.getMinutes();
-        Date dDuration = new Date(duration);
-        System.out.println("Day #"+day+"the longest nap starts at "+sNapStart+" and will last for "+ dDuration.getHours()+" hours and "+dDuration.getHours()+" minutes.");
 
-    }
+    public static class Day {
 
-
-    public static class Day{
-
-        public PriorityQueue<Appointment> appointments = new PriorityQueue<>();
         int day;
-        public Day(int day){
-            this.day=day;
-        }
-
-        public void calcLongestNapTime() throws ParseException {
-            long longestNapDuration =0;
-            Date longestNapStart = null;
-            Date endAppointment =(formater.parse("10:00"));
-            Appointment currentAppointment;
-            while ((currentAppointment= appointments.poll())!=null){
-                if (currentAppointment.startTime.getTime()-endAppointment.getTime()>longestNapDuration){
-                    longestNapDuration=currentAppointment.startTime.getTime()-endAppointment.getTime();
-                    longestNapStart =endAppointment;
-                }
-                endAppointment=currentAppointment.endTime;
-            }
-
-            if (-formater.parse("18:00").getTime()-endAppointment.getTime()>longestNapDuration){
-                longestNapDuration=currentAppointment.startTime.getTime()-endAppointment.getTime();
-                longestNapStart =endAppointment;
-            }
-
-
-            print(this.day,longestNapStart,longestNapDuration);
-
-        }
-
-
-        public static class Appointment implements Comparable{
-            public Date startTime;
-            public Date endTime;
-
-
-            public Appointment(String startTime,String endTime) throws ParseException {
-                this.startTime =formater.parse(startTime);
-                this.endTime = formater.parse(endTime);
-            }
-
-            @Override
-            public int compareTo(Object o) {
-                return this.startTime.compareTo(((Appointment)o).startTime);
+        Boolean[] appointmentScheduler = new Boolean[480];
+        public Day(int day) {
+            this.day = day;
+            for (int i = 0; i < appointmentScheduler.length; i++) {
+                appointmentScheduler[i]=true;
             }
         }
-    }
 
-
-
-
-
-
-    /**public static void start() {
-        HashMap<String, City> cites = new HashMap<>(100); //All cities on a map
-        int testcase = -1;
-        int currentTestcase = 0;
-        int connections = -1;
-        int currentConnection = 0;
-        String input = "";
-        while ((input = FromDuskTillDawn10187.ReadLn(255)) != null) {
-            if (testcase == -1) { //Saves how many test case there are.
-                testcase = Integer.parseInt(input);
-            } else if (connections == -1) { //Saves how many connections there are for a test case.
-                connections = Integer.parseInt(input);
-            } else if (currentConnection < connections) {
-                currentConnection++;
-                String[] inputs = input.split(" "); //0=departCity 1=targetCity 2=departTime 3=duration of the drive
-                int departTime = getSimpleTime(inputs[2]);
-                if (departTime == -1) {
-                    continue;
-                }
-                int arriveTime = departTime + Integer.parseInt(inputs[3]); //Converted to arrive time for simplification.
-                if (arriveTime > 12) { //Depart Time need to be always smaller else he would drive through the day.
-                    continue;
-                }
-
-                //Create new city.
-                if (!cites.containsKey(inputs[0])) {
-                    cites.put(inputs[0], new City(inputs[0]));
-                }
-
-                //Create new city for the target.
-                City targetCity;
-                if ((targetCity = cites.get(inputs[1])) == null) {
-                    targetCity = new City(inputs[1]);
-                    cites.put(inputs[1], targetCity);
-                }
-
-                //add the connection to the city. Also adds the target City (reference) to the connection.
-                cites.get(inputs[0]).connections.add(new Connection(targetCity, departTime, arriveTime));
-            } else {
-                //Searches the city.
-                String[] inputs = input.split(" ");
-                City startCity = cites.get(inputs[0]);
-                if (inputs[0].equals(inputs[1])) {
-                    print(currentTestcase, 0);
-                } else if (startCity == null) {
-                    print(currentTestcase, -1);
+        public void addAppointment(int start,int end){
+            //no start before 10:00
+            start=start-10*60;
+            end = end -10*60;
+            for (int i = start; i < end ; i++) {
+                appointmentScheduler[i]=false;
+            }
+        }
+        
+        public void calcLongestNapTime(){
+            int napStart=0;
+            int napDuration=0;
+            int tempNapStart=0;
+            boolean inFreeTime=false;
+            for (int i = 0; i < appointmentScheduler.length; i++) {
+                if (appointmentScheduler[i]){
+                    if (inFreeTime==false){
+                        tempNapStart=i;
+                        inFreeTime=true;
+                    }
                 } else {
-                    print(currentTestcase, findWay(cites.get(inputs[0]), cites.get(inputs[1])));
+                    if (inFreeTime){
+                        inFreeTime=false;
+                        if (i-tempNapStart>napDuration){
+                            napStart=tempNapStart;
+                            napDuration=i-tempNapStart;
+                        }
+                    }
                 }
-
-                currentTestcase++;
-                currentConnection = 0;
-                connections = -1;
-                cites.clear();
-
             }
+            if (inFreeTime){
+                if (appointmentScheduler.length-tempNapStart>napDuration){
+                    napStart=tempNapStart;
+                    napDuration=appointmentScheduler.length-tempNapStart;
+                }
+            }
+
+            print(day,napStart+10*60,napDuration);
         }
-    }*/
+        
 
-
+    }
 }
