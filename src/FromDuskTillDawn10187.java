@@ -11,12 +11,12 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
 
-class Main {
+/**class Main {
     public static void main(String args[])  // entry point from OS
     {
         FromDuskTillDawn10187.start();
     }
-}
+}*/
 
 class FromDuskTillDawn10187 {
 
