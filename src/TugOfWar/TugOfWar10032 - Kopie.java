@@ -64,24 +64,48 @@ class TugOfWar10032 {
         }
     }
 
-    public void calc(){
-        if (peoples.size()%2==1){
+    public void calc() {
+        if (peoples.size() % 2 == 1) {
             peoples.add(0);
         }
-        Collections.sort(peoples, Collections.reverseOrder());
-        int peopleInGroup=peoples.size()/2;
-        int groupMaxhwight=0;
+        Collections.sort(peoples);
+        int peopleInGroup = peoples.size() / 2;
+        int TotalWight = 0;
         for (int i = 0; i < peoples.size(); i++) {
-            groupMaxhwight+=peoples.get(i);
+            TotalWight += peoples.get(i);
         }
-        groupMaxhwight+=groupMaxhwight%2;
-        groupMaxhwight=groupMaxhwight/2;
+        int groupMaxhwight = TotalWight % 2;
+        groupMaxhwight = TotalWight / 2;
+       int resul= recursion(peoples.size() - 1, peopleInGroup, groupMaxhwight, 0, "");
+       System.out.println(resul+" "+(TotalWight-resul));
     }
 
-    public int recursion(int currentPeople,int missingPeople,int groupMaxWight){
-            if (currentPeople==-1||missingPeople==0){
+    public int recursion(int currentPeople, int missingPeople, int groupMaxWight, int currentWight, String values) {
+        if (currentPeople == -1 || missingPeople == 0) {
+            if (missingPeople == 0) {
 
+                if (groupMaxWight >= currentWight) {
+                   // System.out.println(values);
+                    return currentWight;
+                } else {
+                    return 0;
+                }
+            } else {
+                return 0;
             }
+
+        } else {
+            int result1 = recursion(currentPeople - 1, missingPeople, groupMaxWight, currentWight, values);
+            int result2 = recursion(currentPeople - 1, missingPeople - 1, groupMaxWight,
+                    currentWight + peoples.get(currentPeople), values + " " + peoples.get(currentPeople));
+
+            if (result1 > result2) {
+                return result1;
+            } else {
+                return result2;
+            }
+
+        }
     }
 
 
@@ -101,7 +125,7 @@ class TugOfWar10032 {
                     group1.add(peoples.get(front + 1));
                     group2.add(peoples.get(front));
                     group1Summe += peoples.get(front + 1);
-                    group2Summe += peoples.get(front );
+                    group2Summe += peoples.get(front);
                 } else {
                     group2.add(peoples.get(front + 1));
                     group1.add(peoples.get(front));
@@ -125,12 +149,12 @@ class TugOfWar10032 {
                 }
                 back -= 2;
             } else if (-back + front + 1 <= peoples.size()) {
-                if (group1Summe>group2Summe){
+                if (group1Summe > group2Summe) {
                     group2.add(peoples.get(front));
-                    group2Summe += peoples.get(front );
+                    group2Summe += peoples.get(front);
                 } else {
                     group1.add(peoples.get(front));
-                    group1Summe += peoples.get(front );
+                    group1Summe += peoples.get(front);
                 }
                 front++;
             }
@@ -158,18 +182,17 @@ class TugOfWar10032 {
             group1Summe+=smales;
         } */
 
-        if (group1.size()>group2.size()){
+        if (group1.size() > group2.size()) {
             group1.add(0);
-        } else if(group1.size()<group2.size()){
+        } else if (group1.size() < group2.size()) {
             group1.add(0);
         }
 
 
-
-        if (group1Summe>group2Summe){
-            System.out.println(group2Summe+" "+group1Summe);
-        }else{
-            System.out.println(group1Summe+" "+group2Summe);
+        if (group1Summe > group2Summe) {
+            System.out.println(group2Summe + " " + group1Summe);
+        } else {
+            System.out.println(group1Summe + " " + group2Summe);
         }
 
         System.out.println("");
@@ -190,7 +213,7 @@ class TugOfWar10032 {
                 peoples) {
             goalGroupWight += value;
         }
-        int groupWightAverage = goalGroupWight / 2 ;
+        int groupWightAverage = goalGroupWight / 2;
 
         int group1 = recursifCAlc(peoples.size(), peoples.size() / 2, groupWightAverage);
         int group2 = goalGroupWight - group1;
