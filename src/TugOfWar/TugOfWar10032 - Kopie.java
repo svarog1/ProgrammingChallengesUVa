@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.sql.Struct;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -39,7 +40,7 @@ class TugOfWar10032 {
         int numberOfElements = 0;
         boolean isBlank = false;
         int numberOfCasses = 0;
-        ArrayList<Integer> peoples = null;
+        Integer[] peoples = null;
         while ((input = readLn(255)) != null) {
             if (isBlank) {
                 isBlank = false;
@@ -48,9 +49,15 @@ class TugOfWar10032 {
                 isBlank = true;
             } else if (numberOfElements == 0) {
                 numberOfElements = Integer.parseInt(input);
-                peoples = new ArrayList<>();
+                if (numberOfElements%2==1){
+                    peoples = new Integer[numberOfElements+1];
+                    peoples[numberOfElements]=0;
+                }else {
+                    peoples = new Integer[numberOfElements];
+                }
+
             } else {
-                peoples.add(Integer.parseInt(input));
+                peoples[numberOfElements-1]=Integer.parseInt(input);
                 numberOfElements--;
                 if (numberOfElements == 0) {
                     this.peoples = peoples;
@@ -67,56 +74,66 @@ class TugOfWar10032 {
     }
 
     int groupMaxWight=0;
+    boolean[][][] optimasationArray;
     boolean foundResult=false;
     public void calc() {
         foundResult=false;
-        if (peoples.size() % 2 == 1) {
-            peoples.add(0);
-        }
-        Collections.sort(peoples);
-        int peopleInGroup = peoples.size() / 2;
+        //Collections.sort(peoples);
+        int peopleInGroup = peoples.length / 2;
         int TotalWight = 0;
-        for (int i = 0; i < peoples.size(); i++) {
-            TotalWight += peoples.get(i);
+        for (int i = 0; i < peoples.length; i++) {
+            TotalWight += peoples[i];
         }
-       // groupMaxWight = TotalWight % 2;
+        // groupMaxWight = TotalWight % 2;
         groupMaxWight = TotalWight / 2;
-
-        int resul= recursion(peoples.size() - 1, peopleInGroup, 0);
+        optimasationArray=new boolean[peoples.length+2][peopleInGroup+1][groupMaxWight+1];
+        int resul= recursion(peoples.length - 1, peopleInGroup, 0);
 
         //System.out.println((now2.getNano()-now.getNano())/1000000);
-       System.out.println(resul+" "+(TotalWight-resul));
-       System.out.println("");
+        System.out.println(resul+" "+(TotalWight-resul));
+        System.out.println("");
     }
+
+
     int counter=0;
     int countCalls=0;
+
     public int recursion(int currentPeople, int missingPeople, int currentWight) {
         countCalls++;
-        if (foundResult){
-            counter++;
+        if(optimasationArray[currentPeople+1][missingPeople][currentWight]){
             return 0;
-        }else if (currentPeople == -1 || missingPeople == 0|| currentWight>=groupMaxWight) {
+        }
+        else if (foundResult){
+            counter++;
+            optimasationArray[currentPeople+1][missingPeople][currentWight]= true;
+            return 0;
+        }else if (currentPeople == -1 || missingPeople == 0|| currentWight>=groupMaxWight || peoples[currentPeople]+currentWight>groupMaxWight ) {
             if (missingPeople == 0) {
-                if (currentWight==0){
+                if (currentWight==groupMaxWight){
                     foundResult=true;
                     counter++;
+                    optimasationArray[currentPeople+1][missingPeople][currentWight]= true;
                     return groupMaxWight;
 
                 }else if (groupMaxWight >= currentWight) {
+                    optimasationArray[currentPeople+1][missingPeople][currentWight]= true;
                     return currentWight;
                 } else {
                     counter++;
+                    optimasationArray[currentPeople+1][missingPeople][currentWight]= true;
                     return 0;
                 }
             } else {
                 counter++;
+                optimasationArray[currentPeople+1][missingPeople][currentWight]= true;
                 return 0;
             }
 
         } else {
-            int result1 = recursion(currentPeople - 1, missingPeople, currentWight);
             int result2 = recursion(currentPeople - 1, missingPeople - 1,
-                    currentWight+peoples.get(currentPeople));
+                    currentWight+peoples[currentPeople]);
+            int result1 = recursion(currentPeople - 1, missingPeople, currentWight);
+            optimasationArray[currentPeople+1][missingPeople][currentWight]= true;
 
             if (result1 > result2) {
                 return result1;
@@ -126,6 +143,70 @@ class TugOfWar10032 {
 
         }
     }
+
+
+
+    int minDiff;
+    Integer[] peoples;
+    boolean[][][] optimasationArray2;
+    public void calc10(){
+        boolean[] currentElements = new boolean[peoples.length];
+        boolean[] solution = new boolean[peoples.length];
+        minDiff = Integer.MAX_VALUE;
+        int sum =0;
+        for (int i = 0; i < peoples.length; i++) {
+            sum+=peoples[i];
+        }
+        optimasationArray2=new boolean[peoples.length][sum/2][peoples.length/2]; // Number of Peoples, Total PssibleWight,possibleAddedPeople.
+
+        TugofWarRecur(currentElements,0,solution,sum,0,0);
+        
+        String group1="";
+        int group1Wight=0;
+        String group2="";
+        int group2Wight=0;
+        for (int i = 0; i < peoples.length; i++) {
+            if(solution[i]){
+                group1+=peoples[i]+" ";
+                group1Wight+=peoples[i];
+            }else {
+                group2+=peoples[i]+" ";
+                group2Wight+=peoples[i];
+            }
+        }
+        System.out.println("");
+    }
+
+    public void TugofWarRecur( boolean[] currentElements, int selectedElementsCount,  boolean[] solution, int sum,int currentSum, int currentPosition){
+
+        if(currentPosition==peoples.length){
+            return;
+        }
+
+        if((peoples.length/2 - selectedElementsCount)>peoples.length -currentPosition){
+            return;
+        }
+
+        TugofWarRecur(currentElements,selectedElementsCount,solution,sum,currentSum,currentPosition+1);
+        selectedElementsCount++;
+        currentSum=currentSum+peoples[currentPosition];
+        currentElements[currentPosition]=true;
+        if (selectedElementsCount == peoples.length/2){
+            if(Math.abs(sum/2-currentSum)< minDiff){
+                minDiff=Math.abs(sum/2-currentSum);
+                for (int i = 0; i < peoples.length; i++) {
+                    solution[i] = currentElements[i];
+                }
+            }
+        }else {
+            TugofWarRecur(currentElements,selectedElementsCount,solution,sum,currentSum,currentPosition+1);
+        }
+
+        currentElements[currentPosition]=false;
+    }
+
+
+/*
 
 
     public void calc8() {
@@ -199,7 +280,7 @@ class TugOfWar10032 {
             }
             group2Summe-=smales;
             group1Summe+=smales;
-        } */
+        }
 
         if (group1.size() > group2.size()) {
             group1.add(0);
@@ -221,11 +302,10 @@ class TugOfWar10032 {
     public
 
 
-    ArrayList<Integer> peoples;
+
     Integer[][] optimasitionArray;
 
     public void calc6() {
-        Collections.sort(peoples);
         optimasitionArray = new Integer[peoples.size() + 1][peoples.size() / 2 + 1];
         int goalGroupWight = 0;
         for (int value :
@@ -465,6 +545,6 @@ class TugOfWar10032 {
         public int group2 = 0;
         public int div = 0;
     }
-
+*/
 
 }
