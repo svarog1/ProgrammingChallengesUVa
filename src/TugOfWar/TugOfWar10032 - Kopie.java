@@ -88,28 +88,35 @@ class TugOfWar10032 {
        System.out.println(resul+" "+(TotalWight-resul));
        System.out.println("");
     }
-
+    int counter=0;
+    int countCalls=0;
     public int recursion(int currentPeople, int missingPeople, int currentWight) {
+        countCalls++;
         if (foundResult){
+            counter++;
             return 0;
-        }else if (currentPeople == -1 || missingPeople == 0|| currentWight>=groupMaxWight||currentPeople<missingPeople) {
+        }else if (currentPeople == -1 || missingPeople == 0|| currentWight>=groupMaxWight) {
             if (missingPeople == 0) {
-                if (currentWight==groupMaxWight){
+                if (currentWight==0){
                     foundResult=true;
-                    return currentWight;
+                    counter++;
+                    return groupMaxWight;
 
                 }else if (groupMaxWight >= currentWight) {
                     return currentWight;
                 } else {
+                    counter++;
                     return 0;
                 }
             } else {
+                counter++;
                 return 0;
             }
 
         } else {
             int result1 = recursion(currentPeople - 1, missingPeople, currentWight);
-            int result2 = recursion(currentPeople - 1, missingPeople - 1,currentWight);
+            int result2 = recursion(currentPeople - 1, missingPeople - 1,
+                    currentWight+peoples.get(currentPeople));
 
             if (result1 > result2) {
                 return result1;
