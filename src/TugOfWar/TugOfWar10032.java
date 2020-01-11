@@ -80,12 +80,12 @@ class TugOfWar10032 {
 
     public void calc() {
         foundResult = false;
-        int peopleInGroup = peoples.length >> 2;
+        int peopleInGroup = peoples.length / 2;
         int TotalWight = 0;
         for (int i = 0; i < peoples.length; i++) {
             TotalWight += peoples[i];
         }
-        groupMaxWight = TotalWight >> 2;
+        groupMaxWight = TotalWight / 2;
         optimasationArray = new boolean[peoples.length + 2][peopleInGroup + 1][groupMaxWight + 1];
         int resul = recursion(peoples.length - 1, peopleInGroup, 0);
         System.out.println(resul + " " + (TotalWight - resul));
