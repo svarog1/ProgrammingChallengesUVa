@@ -1,4 +1,6 @@
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @SuppressWarnings("WrongPackageStatement")
@@ -64,7 +66,10 @@ class TugOfWar10032 {
         }
     }
 
+    int groupMaxWight=0;
+    boolean foundResult=false;
     public void calc() {
+        foundResult=false;
         if (peoples.size() % 2 == 1) {
             peoples.add(0);
         }
@@ -74,18 +79,26 @@ class TugOfWar10032 {
         for (int i = 0; i < peoples.size(); i++) {
             TotalWight += peoples.get(i);
         }
-        int groupMaxhwight = TotalWight % 2;
-        groupMaxhwight = TotalWight / 2;
-       int resul= recursion(peoples.size() - 1, peopleInGroup, groupMaxhwight, 0, "");
+       // groupMaxWight = TotalWight % 2;
+        groupMaxWight = TotalWight / 2;
+
+        int resul= recursion(peoples.size() - 1, peopleInGroup, 0);
+
+        //System.out.println((now2.getNano()-now.getNano())/1000000);
        System.out.println(resul+" "+(TotalWight-resul));
+       System.out.println("");
     }
 
-    public int recursion(int currentPeople, int missingPeople, int groupMaxWight, int currentWight, String values) {
-        if (currentPeople == -1 || missingPeople == 0) {
+    public int recursion(int currentPeople, int missingPeople, int currentWight) {
+        if (foundResult){
+            return 0;
+        }else if (currentPeople == -1 || missingPeople == 0|| currentWight>=groupMaxWight||currentPeople<missingPeople) {
             if (missingPeople == 0) {
+                if (currentWight==groupMaxWight){
+                    foundResult=true;
+                    return currentWight;
 
-                if (groupMaxWight >= currentWight) {
-                   // System.out.println(values);
+                }else if (groupMaxWight >= currentWight) {
                     return currentWight;
                 } else {
                     return 0;
@@ -95,9 +108,8 @@ class TugOfWar10032 {
             }
 
         } else {
-            int result1 = recursion(currentPeople - 1, missingPeople, groupMaxWight, currentWight, values);
-            int result2 = recursion(currentPeople - 1, missingPeople - 1, groupMaxWight,
-                    currentWight + peoples.get(currentPeople), values + " " + peoples.get(currentPeople));
+            int result1 = recursion(currentPeople - 1, missingPeople, currentWight);
+            int result2 = recursion(currentPeople - 1, missingPeople - 1,currentWight);
 
             if (result1 > result2) {
                 return result1;
