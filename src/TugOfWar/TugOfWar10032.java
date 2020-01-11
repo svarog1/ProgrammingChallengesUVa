@@ -121,32 +121,5 @@ class TugOfWar10032 {
             }
 
         }
-
-
-       /* if (optimasationArray[currentPeople + 1][missingPeople][currentWight]) {
-            return 0;
-        } else if (foundResult) {
-            optimasationArray[currentPeople + 1][missingPeople][currentWight] = true;
-            return 0;
-        } else if (currentPeople == -1 || missingPeople == 0 || currentWight >= groupMaxWight) {
-            if (missingPeople == 0) {
-                if (currentWight == groupMaxWight) {
-                    foundResult = true;
-                    optimasationArray[currentPeople + 1][missingPeople][currentWight] = true;
-                    return groupMaxWight;
-
-                } else if (groupMaxWight >= currentWight) {
-                    optimasationArray[currentPeople + 1][missingPeople][currentWight] = true;
-                    return currentWight;
-                } else {
-                    optimasationArray[currentPeople + 1][missingPeople][currentWight] = true;
-                    return 0;
-                }
-            } else {
-                optimasationArray[currentPeople + 1][missingPeople][currentWight] = true;
-                return 0;
-            }
-
-        }*/
     }
 }
