@@ -33,6 +33,7 @@ class TugOfWar10032 {
     }
 
     public void start() {
+        long startTime=0;
         String input;
         int numberOfElements = 0;
         boolean isBlank = false;
@@ -44,6 +45,7 @@ class TugOfWar10032 {
             } else if (numberOfCasses == 0) {
                 numberOfCasses = Integer.parseInt(input);
                 isBlank = true;
+                startTime = System.nanoTime();
             } else if (numberOfElements == 0) {
                 numberOfElements = Integer.parseInt(input);
                 if (numberOfElements % 2 == 1) {
@@ -57,13 +59,16 @@ class TugOfWar10032 {
                 peoples[numberOfElements - 1] = Integer.parseInt(input);
                 numberOfElements--;
                 if (numberOfElements == 0) {
+
                     this.peoples = peoples;
                     calc();
                     numberOfCasses--;
                     if (numberOfCasses == 0) {
+                        long endTime = System.nanoTime() - startTime;
+                        System.out.println(endTime);
                         return;
                     } else {
-                        System.out.println("");
+                       // System.out.println("");
                     }
 
                     isBlank = true;
@@ -71,6 +76,7 @@ class TugOfWar10032 {
 
             }
         }
+
     }
 
     int[] peoples;
@@ -79,7 +85,7 @@ class TugOfWar10032 {
     boolean foundResult = false;
 
     public void calc() {
-        long startTime = System.nanoTime();
+
         foundResult = false;
         int peopleInGroup = peoples.length / 2;
         int TotalWight = 0;
@@ -89,10 +95,9 @@ class TugOfWar10032 {
         groupMaxWight = TotalWight / 2;
         optimasationArray = new boolean[peoples.length + 2][peopleInGroup + 1][groupMaxWight + 1];
         int resul = recursion(peoples.length - 1, peopleInGroup, 0);
-        System.out.println(resul + " " + (TotalWight - resul));
+       // System.out.println(resul + " " + (TotalWight - resul));
 
-        long endTime = System.nanoTime() - startTime;
-        System.out.println(endTime);
+
 
     }
 
