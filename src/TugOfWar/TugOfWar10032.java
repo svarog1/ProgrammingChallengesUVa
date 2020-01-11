@@ -33,7 +33,6 @@ class TugOfWar10032 {
     }
 
     public void start() {
-        long startTime=0;
         String input;
         int numberOfElements = 0;
         boolean isBlank = false;
@@ -45,7 +44,6 @@ class TugOfWar10032 {
             } else if (numberOfCasses == 0) {
                 numberOfCasses = Integer.parseInt(input);
                 isBlank = true;
-                startTime = System.nanoTime();
             } else if (numberOfElements == 0) {
                 numberOfElements = Integer.parseInt(input);
                 if (numberOfElements % 2 == 1) {
@@ -64,8 +62,6 @@ class TugOfWar10032 {
                     calc();
                     numberOfCasses--;
                     if (numberOfCasses == 0) {
-                        long endTime = System.nanoTime() - startTime;
-                        System.out.println(endTime);
                         return;
                     } else {
                        // System.out.println("");
