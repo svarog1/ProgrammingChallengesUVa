@@ -79,6 +79,7 @@ class TugOfWar10032 {
     boolean foundResult = false;
 
     public void calc() {
+        long startTime = System.nanoTime();
         foundResult = false;
         int peopleInGroup = peoples.length / 2;
         int TotalWight = 0;
@@ -89,6 +90,9 @@ class TugOfWar10032 {
         optimasationArray = new boolean[peoples.length + 2][peopleInGroup + 1][groupMaxWight + 1];
         int resul = recursion(peoples.length - 1, peopleInGroup, 0);
         System.out.println(resul + " " + (TotalWight - resul));
+
+        long endTime = System.nanoTime() - startTime;
+        System.out.println(endTime);
 
     }
 
@@ -119,7 +123,6 @@ class TugOfWar10032 {
             } else {
                 return result2;
             }
-
         }
     }
 }
