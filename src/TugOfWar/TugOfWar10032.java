@@ -64,7 +64,7 @@ class TugOfWar10032 {
                     if (numberOfCasses == 0) {
                         return;
                     } else {
-                       // System.out.println("");
+                       System.out.println("");
                     }
 
                     isBlank = true;
@@ -78,7 +78,12 @@ class TugOfWar10032 {
     int[] peoples;
     int groupMaxWight = 0;
     boolean[][][] optimasationArray;
+    boolean isUsed=false;
     boolean foundResult = false;
+
+    public TugOfWar10032(){
+        optimasationArray=new boolean[102][51][22501];
+    }
 
     public void calc() {
 
@@ -89,14 +94,23 @@ class TugOfWar10032 {
             TotalWight += peoples[i];
         }
         groupMaxWight = TotalWight / 2;
-        optimasationArray = new boolean[peoples.length + 2][peopleInGroup + 1][groupMaxWight + 1];
+        if (isUsed){
+            for (int i = 0; i < peoples.length + 2; i++) {
+                for (int j = 0; j < peopleInGroup + 1; j++) {
+                    for (int k = 0; k < groupMaxWight + 1; k++) {
+                            optimasationArray[i][j][k]=false;
+                    }
+                }
+            }
+        }
+        isUsed=true;
+        //optimasationArray = new boolean[peoples.length + 2][peopleInGroup + 1][groupMaxWight + 1];
         int resul = recursion(peoples.length - 1, peopleInGroup, 0);
-       // System.out.println(resul + " " + (TotalWight - resul));
+         System.out.println(resul + " " + (TotalWight - resul));
 
 
 
     }
-
 
 
     public int recursion(int currentPeople, int missingPeople, int currentWight) {
