@@ -1,6 +1,16 @@
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
+
+/**
+ * UVa 10032 - Tug of War
+ * https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&category=0&problem=973
+ *
+ *
+ * Ansatz: I used the same Idea as in the Knapsack problem.
+ * https://en.wikipedia.org/wiki/Knapsack_problem
+ *
+ * @author Santino De-Sassi
+ * @version 2020.01.12
+ */
 
 
 @SuppressWarnings("WrongPackageStatement")
@@ -14,11 +24,23 @@ class Main {
 
 class TugOfWar10032 {
 
+    Integer[] peoples;
+    int groupMaxWight = 0;
+    boolean[][][] optimisationArray; //used for optimisation
+    boolean isUsed=false; //used for optimisation
+    boolean foundResult = false; //used for optimisation
+
+    public TugOfWar10032(){
+        //It is faster to init the optimisationArray with ist possible max size.
+        //Then it is to create each time a new Array.
+        optimisationArray=new boolean[101][51][22501];
+    }
+
+    //Reads each line.
     String readLn(int maxLg)  // utility function to read from stdin
     {
         byte lin[] = new byte[maxLg];
         int lg = 0, car = -1;
-        String line = "";
 
         try {
             while (lg < maxLg) {
@@ -34,6 +56,10 @@ class TugOfWar10032 {
         return (new String(lin, 0, lg));
     }
 
+    /**
+     * Generate reads the data and starts the calculation for each group.
+     * Simplification: if it has an odd number of elements, 1 element with the value 0 is added.
+     */
     public void start() {
         String input;
         int numberOfElements = 0;
@@ -54,7 +80,6 @@ class TugOfWar10032 {
                 } else {
                     peoples = new Integer[numberOfElements];
                 }
-
             } else {
                 peoples[numberOfElements - 1] = Integer.parseInt(input);
                 numberOfElements--;
@@ -77,62 +102,69 @@ class TugOfWar10032 {
 
     }
 
-    Integer[] peoples;
-    int groupMaxWight = 0;
-    boolean[][][] optimasationArray;
-    boolean isUsed=false;
-    boolean foundResult = false;
 
-    public TugOfWar10032(){
-        optimasationArray=new boolean[101][51][22501];
-    }
-
+    /**
+     * Start the calculation. Prepares the needed values for a Case and starts the recursion.
+     */
     public void calc() {
-
         foundResult = false;
         int peopleInGroup = peoples.length / 2;
-        int TotalWight = 0;
+        int totalWight = 0;
         for (int i = 0; i < peoples.length; i++) {
-            TotalWight += peoples[i];
+            totalWight += peoples[i];
         }
-        groupMaxWight = TotalWight / 2;
+        groupMaxWight = totalWight / 2;
+
+        //It is faster to set all needed values on false then it is to create each time a new array. (optimisation)
         if (isUsed){
             for (int i = 0; i < peoples.length+1 ; i++) {
                 for (int j = 0; j < peopleInGroup+1 ; j++) {
                     for (int k = 0; k < groupMaxWight + 1; k++) {
-                            optimasationArray[i][j][k]=false;
+                        optimisationArray[i][j][k]=false;
                     }
                 }
             }
         }
         isUsed=true;
-        int resul = recursion(peoples.length , peopleInGroup, 0);
-         System.out.println(resul + " " + (TotalWight - resul));
+        int result = recursion(peoples.length , peopleInGroup, 0);
+         System.out.println(result + " " + (totalWight - result));
 
 
 
     }
 
 
+    /**
+     * Calculate with recursion the wight of the lighter group.
+     * @param currentPeople Selects the current person in the peoples array.
+     * @param missingPeople Contains how many peoples can still be added to this group.
+     * @param currentWight The wight of the current group.
+     * @return valid: wen a valid answer is found return the wight of the group. Invalid: return 0
+     */
     public int recursion(int currentPeople, int missingPeople, int currentWight) {
-        if (foundResult||currentWight > groupMaxWight ||optimasationArray[currentPeople ][missingPeople][currentWight] ) {
+        //Cancels this path wen: already the best result is found or the group is to heavy or this case has been already calculated.
+        if (foundResult||currentWight > groupMaxWight ||optimisationArray[currentPeople ][missingPeople][currentWight] ) {
             return 0;
+        //When the group is full. Could be a valid result.
         }else if(missingPeople==0){
+            //Is it the best possible solution.
             if (currentWight==groupMaxWight){
                 foundResult = true;
                 return groupMaxWight;
-            } else { //case currentWight<groupMaxWight
-                optimasationArray[currentPeople ][missingPeople][currentWight] = true;
+            } else {
+                optimisationArray[currentPeople ][missingPeople][currentWight] = true;
                 return currentWight;
             }
-        }else if(currentPeople == 0){
-            optimasationArray[currentPeople ][missingPeople][currentWight] = true;
+        // there can be no possible solution when there are not enough people left to fill the group.
+        }else if(currentPeople < missingPeople){
+            optimisationArray[currentPeople ][missingPeople][currentWight] = true;
             return 0;
+        // Goes tough every Possible solution. Always selects the bigger possible solution.
         }  else {
             int result2 = recursion(currentPeople - 1, missingPeople - 1,
                     currentWight + peoples[currentPeople-1]);
             int result1 = recursion(currentPeople - 1, missingPeople, currentWight);
-            optimasationArray[currentPeople ][missingPeople][currentWight] = true;
+            optimisationArray[currentPeople ][missingPeople][currentWight] = true;
 
             if (result1 > result2) {
                 return result1;
