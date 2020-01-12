@@ -5,7 +5,7 @@ import java.io.IOException;
  * https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&category=0&problem=973
  *
  *
- * Ansatz: I used the same Idea as in the Knapsack problem.
+ * Approach: I used the same Idea as in the Knapsack problem.
  * https://en.wikipedia.org/wiki/Knapsack_problem
  *
  * @author Santino De-Sassi
@@ -23,8 +23,7 @@ class Main {
 }
 
 class TugOfWar10032 {
-
-    Integer[] peoples;
+    Integer[] peoples; //All people.
     int groupMaxWight = 0;
     boolean[][][] optimisationArray; //used for optimisation
     boolean isUsed=false; //used for optimisation
@@ -41,7 +40,6 @@ class TugOfWar10032 {
     {
         byte lin[] = new byte[maxLg];
         int lg = 0, car = -1;
-
         try {
             while (lg < maxLg) {
                 car = System.in.read();
@@ -51,7 +49,6 @@ class TugOfWar10032 {
         } catch (IOException e) {
             return (null);
         }
-
         if ((car < 0) && (lg == 0)) return (null);  // eof
         return (new String(lin, 0, lg));
     }
@@ -126,6 +123,8 @@ class TugOfWar10032 {
             }
         }
         isUsed=true;
+
+        //Starts the calculation.
         int result = recursion(peoples.length , peopleInGroup, 0);
          System.out.println(result + " " + (totalWight - result));
 
