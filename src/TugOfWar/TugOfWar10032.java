@@ -8,6 +8,29 @@ import java.io.IOException;
  * Approach: I used the same Idea as in the Knapsack problem.
  * https://en.wikipedia.org/wiki/Knapsack_problem
  *
+ * Idee des Programmes.
+ * Mann kennt das maximale Gewicht der Teilgruppe mit dem geringeren Gewicht. Mann kennt auch die maximale Anzahl
+ * Element in einer Teilgruppe. Nun kann man alle varianten der teilgruppe mit dem kleineren Gewicht ausrechnen welche
+ * die benötigten Anzahl Elemente enthalten. Von diesen varianten wird dann das grösste Gewicht genommen und ausgegeben.
+ * Die zweite gruppe hat immer das Totale Gewicht der Personen minus das Gewicht der kleineren Gruppen.
+ *
+ * Vereinfachungen:
+ * Bei einer ungeraden Zahl an Personen wird ein Dummy Person mit Gewicht 0 hinzugefügt. Somit haben immer beide
+ * Gruppen gleich viele Personen.
+ *
+ * Optimierungen:
+ *
+ * Der optimisationArray: Damit nicht alle Varianten berechnet werden müssen werden in diesem Array angegeben ob dieser
+ * Path bereits berechnet wurde. Dieser Array enthält für jede Anzahl hinzugefügten Personen mit einem Gewicht ob dieses
+ * bereits berechnet wurde oder nicht. Wenn ja kann hier abgebrochen werden da kein andere variante berechnet werden
+ * kann.
+ * Der optimisationArray: Da die Allokation des Speicherplatzes des Arrays langsam ist wird dieser mit der maximal
+ * möglichen grösse einmal initialisiert. Und bei jeder Berechnung werden die Benötigten Elemente, mit einem for, für
+ * die Berechnung wieder auf false gesetzt. (Dies wurde getestet und ist wirklich schneller).
+ *
+ * Die foundResult variable: Wenn ein Resultat gefunden wurde, welches das maximalen Gewicht der
+ * Teilgruppe gefunden wurde kann die Rekursion abgebrochen werde, da es nicht möglich ist einen besseren variante zu finden.
+ *
  * @author Santino De-Sassi
  * @version 2020.01.12
  */
@@ -32,6 +55,8 @@ class TugOfWar10032 {
     public TugOfWar10032(){
         //It is faster to init the optimisationArray with ist possible max size.
         //Then it is to create each time a new Array.
+        //50 mac number of people in 1 group.+1 for recursion simplification/optimisation
+        //22501 max wight in a group. +1 for recursion simplification/optimisation
         optimisationArray=new boolean[51][22501];
     }
 
