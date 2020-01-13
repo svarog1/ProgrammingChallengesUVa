@@ -32,7 +32,7 @@ import java.io.IOException;
  * Teilgruppe gefunden wurde kann die Rekursion abgebrochen werde, da es nicht möglich ist einen besseren variante zu finden.
  *
  * @author Santino De-Sassi
- * @version 2020.01.12
+ * @version 2020.01.13
  */
 
 
@@ -129,16 +129,16 @@ class TugOfWar10032 {
      * Start the calculation. Prepares the needed values for a Case and starts the recursion.
      */
     public void calc() {
-        foundResult = false;
-        int peopleInGroup = peoples.length / 2;
-        int totalWight = 0;
+        foundResult = false; //is set to true when te perfect result is found (optimisation)
+        int peopleInGroup = peoples.length / 2; //Number of peoples in one group.
+        int totalWight = 0; //Wight of all persons in this case.
         for (int i = 0; i < peoples.length; i++) {
             totalWight += peoples[i];
         }
-        groupMaxWight = totalWight / 2;
+        groupMaxWight = totalWight / 2; //max wight of the smaler group.
 
         //It is faster to set all needed values on false then it is to create each time a new array. (optimisation)
-        if (isUsed){
+        if (isUsed){ //is not needed the first time because all values are initialised with false.
 
                 for (int j = 0; j < peopleInGroup+1 ; j++) {
                     for (int k = 0; k < groupMaxWight + 1; k++) {
