@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 @SuppressWarnings("WrongPackageStatement")
-class Main {
+/*class Main {
     public static void main(String args[])  // entry point from OS
     {
         LongestNap10191.start();
     }
-}
+}*/
 
 class LongestNap10191 {
 

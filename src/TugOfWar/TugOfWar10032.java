@@ -25,14 +25,14 @@ class Main {
 class TugOfWar10032 {
     Integer[] peoples; //All people.
     int groupMaxWight = 0;
-    boolean[][][] optimisationArray; //used for optimisation
+    boolean[][] optimisationArray; //used for optimisation
     boolean isUsed=false; //used for optimisation
     boolean foundResult = false; //used for optimisation
 
     public TugOfWar10032(){
         //It is faster to init the optimisationArray with ist possible max size.
         //Then it is to create each time a new Array.
-        optimisationArray=new boolean[101][51][22501];
+        optimisationArray=new boolean[51][22501];
     }
 
     //Reads each line.
@@ -114,13 +114,13 @@ class TugOfWar10032 {
 
         //It is faster to set all needed values on false then it is to create each time a new array. (optimisation)
         if (isUsed){
-            for (int i = 0; i < peoples.length+1 ; i++) {
+
                 for (int j = 0; j < peopleInGroup+1 ; j++) {
                     for (int k = 0; k < groupMaxWight + 1; k++) {
-                        optimisationArray[i][j][k]=false;
+                        optimisationArray[j][k]=false;
                     }
                 }
-            }
+
         }
         isUsed=true;
 
@@ -142,7 +142,7 @@ class TugOfWar10032 {
      */
     public int recursion(int currentPeople, int missingPeople, int currentWight) {
         //Cancels this path wen: already the best result is found or the group is to heavy or this case has been already calculated.
-        if (foundResult||currentWight > groupMaxWight ||optimisationArray[currentPeople ][missingPeople][currentWight] ) {
+        if (foundResult||currentWight > groupMaxWight ||optimisationArray[missingPeople][currentWight] ) {
             return 0;
         //When the group is full. Could be a valid result.
         }else if(missingPeople==0){
@@ -151,19 +151,19 @@ class TugOfWar10032 {
                 foundResult = true;
                 return groupMaxWight;
             } else {
-                optimisationArray[currentPeople ][missingPeople][currentWight] = true;
+                optimisationArray[missingPeople][currentWight] = true;
                 return currentWight;
             }
         // there can be no possible solution when there are not enough people left to fill the group.
         }else if(currentPeople < missingPeople){
-            optimisationArray[currentPeople ][missingPeople][currentWight] = true;
+            optimisationArray[missingPeople][currentWight] = true;
             return 0;
         // Goes tough every Possible solution. Always selects the bigger possible solution.
         }  else {
             int result2 = recursion(currentPeople - 1, missingPeople - 1,
                     currentWight + peoples[currentPeople-1]);
             int result1 = recursion(currentPeople - 1, missingPeople, currentWight);
-            optimisationArray[currentPeople ][missingPeople][currentWight] = true;
+            optimisationArray[missingPeople][currentWight] = true;
 
             if (result1 > result2) {
                 return result1;
