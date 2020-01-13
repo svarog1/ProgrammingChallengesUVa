@@ -36,14 +36,14 @@ import java.io.IOException;
  */
 
 
-@SuppressWarnings("WrongPackageStatement")
+@SuppressWarnings("WrongPackageStatement")/*
 class Main {
     public static void main(String args[])  // entry point from OS
     {
         TugOfWar10032 tugOfWar10032 = new TugOfWar10032();
         tugOfWar10032.start();
     }
-}
+}*/
 
 class TugOfWar10032 {
     Integer[] peoples; //All people.
