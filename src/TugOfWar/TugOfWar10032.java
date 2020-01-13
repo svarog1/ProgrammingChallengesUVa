@@ -17,8 +17,8 @@ import java.io.IOException;
 class Main {
     public static void main(String args[])  // entry point from OS
     {
-        TugOfWar10032 euclidProblem10104 = new TugOfWar10032();
-        euclidProblem10104.start();
+        TugOfWar10032 tugOfWar10032 = new TugOfWar10032();
+        tugOfWar10032.start();
     }
 }
 

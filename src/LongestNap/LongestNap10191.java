@@ -1,6 +1,8 @@
 
 import java.io.*;
-/**
+import java.util.ArrayList;
+import java.util.Collections;
+
 @SuppressWarnings("WrongPackageStatement")
 class Main {
     public static void main(String args[])  // entry point from OS
@@ -8,7 +10,7 @@ class Main {
         LongestNap10191.start();
     }
 }
-*/
+
 class LongestNap10191 {
 
     static String ReadLn(int maxLg)  // utility function to read from stdin
@@ -54,7 +56,7 @@ class LongestNap10191 {
                 day.calcLongestNapTime();
             }
         }
-       //System.out.println("");
+       System.out.println("");
     }
 
     //Converts time string HH:mm to an integer
@@ -64,9 +66,8 @@ class LongestNap10191 {
     }
 
     static void print(int day, int napStart, int duration) {
-        //Convert napStart int to the needed String
 
-        int napStartHours = napStart / 60;
+        int napStartHours = (napStart) / 60;
         String sNapStart = "";
         if (napStart > 9) {
             sNapStart = Integer.toString(napStartHours);
@@ -74,7 +75,7 @@ class LongestNap10191 {
             sNapStart = "0" + napStartHours;
         }
         sNapStart += ":";
-        int napStartMinutes = napStart - napStartHours * 60;
+        int napStartMinutes = napStart% 60;
         if (napStartMinutes > 9) {
             sNapStart += Integer.toString(napStartMinutes);
         } else {
@@ -83,9 +84,9 @@ class LongestNap10191 {
 
         //Convert the duration to the needed duration.
         String durationString = "";
-        int durationHours = duration / 60;
+        int durationHours = (duration) / 60;
         if (durationHours > 0) {
-            durationString = durationHours + " hours and " + (duration - durationHours * 60) + " minutes.";
+            durationString = durationHours + " hours and " + (duration %60) + " minutes.";
         } else {
             durationString = duration + " minutes.";
         }
@@ -95,55 +96,59 @@ class LongestNap10191 {
     }
 }
 
+class Appointment implements Comparable<Appointment>{
+    int startAppointment;
+    int endAppointment;
+    public Appointment(int startAppointment, int endAppointment){
+        this.startAppointment=startAppointment;
+        this.endAppointment=endAppointment;
+    }
+
+    @Override
+    public int compareTo(Appointment o) {
+        return Integer.compare(startAppointment,o.startAppointment);
+    }
+}
+
 class Day {
 
     int day;
-    Boolean[] appointmentScheduler = new Boolean[480];
+    ArrayList<Appointment> appointments=new ArrayList<>();
 
     public Day(int day) {
-        this.day = day;
-        for (int i = 0; i < appointmentScheduler.length; i++) {
-            appointmentScheduler[i] = true;
-        }
+        this.day=day;
     }
 
     public void addAppointment(int start, int end) {
-        //no start before 10:00
-        start = start - 10 * 60;
-        end = end - 10 * 60;
-        for (int i = start; i < end; i++) {
-            appointmentScheduler[i] = false;
-        }
+        appointments.add(new Appointment(start,end));
     }
 
     public void calcLongestNapTime() {
-        int napStart = 0;
-        int napDuration = 0;
-        int tempNapStart = 0;
-        boolean inFreeTime = false;
-        for (int i = 0; i < appointmentScheduler.length; i++) {
-            if (appointmentScheduler[i]) {
-                if (inFreeTime == false) {
-                    tempNapStart = i;
-                    inFreeTime = true;
+        int napStart=600; //(10:00)
+        int napDuration=0;;
+        int endAppointment=600;
+        Collections.sort(appointments);
+        for (Appointment ap: appointments ) {
+            if (ap.startAppointment<=endAppointment){
+                if (ap.endAppointment>endAppointment){
+                    endAppointment=ap.endAppointment;
                 }
-            } else {
-                if (inFreeTime) {
-                    inFreeTime = false;
-                    if (i - tempNapStart > napDuration) {
-                        napStart = tempNapStart;
-                        napDuration = i - tempNapStart;
-                    }
+            }else {
+                int tempNapduration=ap.startAppointment-endAppointment;
+                if (tempNapduration>napDuration){
+                    napStart=endAppointment;
+                    napDuration=tempNapduration;
                 }
-            }
-        }
-        if (inFreeTime) {
-            if (appointmentScheduler.length - tempNapStart > napDuration) {
-                napStart = tempNapStart;
-                napDuration = appointmentScheduler.length - tempNapStart;
+
+                endAppointment=ap.endAppointment;
             }
         }
 
-        LongestNap10191.print(day, napStart + 10 * 60, napDuration);
+        if (1080-endAppointment>napDuration){
+            napStart=endAppointment;
+            napDuration=1080-endAppointment;
+        }
+
+        LongestNap10191.print(day, napStart , napDuration);
     }
 }
