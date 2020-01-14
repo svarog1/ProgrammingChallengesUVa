@@ -63,7 +63,7 @@ public class TowerOfCubes10051 {
                     if (addedCubs == numberOfcubes) {
                         numberOfcubes = 0;
                         addedCubs = 0;
-                        calc(cubs);
+                        //calc(cubs);
                         isSpcae = true;
                     }
 

@@ -36,8 +36,8 @@ import java.io.IOException;
  */
 
 
-@SuppressWarnings("WrongPackageStatement")/*
-class Main {
+@SuppressWarnings("WrongPackageStatement")
+/*class Main {
     public static void main(String args[])  // entry point from OS
     {
         TugOfWar10032 tugOfWar10032 = new TugOfWar10032();
@@ -108,7 +108,7 @@ class TugOfWar10032 {
                 if (numberOfElements == 0) {
 
                     this.peoples = peoples;
-                    calc();
+                    //calc();
                     numberOfCasses--;
                     if (numberOfCasses == 0) {
                         return;
