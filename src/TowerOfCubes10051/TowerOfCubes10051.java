@@ -1,9 +1,6 @@
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
+
 
 @SuppressWarnings("WrongPackageStatement")
 class Main {
@@ -40,41 +37,38 @@ public class TowerOfCubes10051 {
     public void start() {
         String input = "";
         Cube[] cubs = null;
-        int currentCasse=0;
+        int currentCasse = 0;
         int numberOfcubes = 0;
         int addedCubs = 0;
-        boolean isSpcae=false;
+        boolean isSpcae = false;
         while ((input = readLn(255)) != null) {
-            if(isSpcae){
-                isSpcae=false;
+            if (!input.isEmpty()) {
+                if (numberOfcubes == 0) {
+                    currentCasse++;
+                    numberOfcubes = Integer.parseInt(input);
+                    if (numberOfcubes == 0) {
+                        return;
+                    }
+                    System.out.println("Case #" + currentCasse);
+                    cubs = new Cube[numberOfcubes];
+                } else {
+                    String[] cubeColors = input.split(" ");
+                    Cube c = new Cube();
+                    c.wight = addedCubs + 1;
+                    for (int i = 0; i < cubeColors.length; i++) {
+                        c.cubeColors[i] = Integer.parseInt(cubeColors[i]);
+                    }
+                    cubs[addedCubs] = c;
+                    addedCubs++;
+                    if (addedCubs == numberOfcubes) {
+                        numberOfcubes = 0;
+                        addedCubs = 0;
+                        calc(cubs);
+                        isSpcae = true;
+                    }
+
+                }
             }
-            else if (numberOfcubes == 0) {
-                currentCasse++;
-                numberOfcubes = Integer.parseInt(input);
-                if (numberOfcubes==0){
-                    return;
-                }
-                System.out.println("Case #"+currentCasse);
-
-                cubs = new Cube[numberOfcubes];
-            } else {
-                String[] cubeColors = input.split(" ");
-                Cube c = new Cube();
-                c.wight=addedCubs+1;
-                for (int i = 0; i < cubeColors.length; i++) {
-                    c.cubeColors[i] = Integer.parseInt(cubeColors[i]);
-                }
-                cubs[addedCubs] = c;
-                addedCubs++;
-                if (addedCubs == numberOfcubes) {
-                    numberOfcubes = 0;
-                    addedCubs = 0;
-                    calc(cubs);
-                    isSpcae=true;
-                }
-
-            }
-
         }
     }
 
@@ -97,16 +91,16 @@ public class TowerOfCubes10051 {
             }
             for (Tower tower :
                     newTowers) {
-                Tower oldTower=towers[tower.nextTowerColor];
-                if (oldTower==null){
+                Tower oldTower = towers[tower.nextTowerColor];
+                if (oldTower == null) {
                     towers[tower.nextTowerColor] = tower;
-                }else if (towers[tower.nextTowerColor].towerCubs.size() < tower.towerCubs.size()) {
+                } else if (towers[tower.nextTowerColor].towerCubs.size() < tower.towerCubs.size()) {
                     towers[tower.nextTowerColor] = tower;
                 }
             }
         }
 
-        Tower largesTower=null;
+        Tower largesTower = null;
         int largestTowerSicze = 0;
         for (Tower tower :
                 towers) {
@@ -121,25 +115,25 @@ public class TowerOfCubes10051 {
 
         System.out.println(largesTower.towerCubs.size());
         for (int i = 0; i < largesTower.towerCubs.size(); i++) {
-            System.out.println(largesTower.towerCubs.get(i).cubeId+" "+getPrintDirection(largesTower.towerCubs.get(i).standsOn));
+            System.out.println(largesTower.towerCubs.get(i).cubeId + " " + getPrintDirection(largesTower.towerCubs.get(i).standsOn));
         }
         System.out.println("");
 
     }
 
-    public String getPrintDirection(int direction){
-        switch (direction){
-            case 0 :
+    public String getPrintDirection(int direction) {
+        switch (direction) {
+            case 0:
                 return "front";
-            case 1 :
+            case 1:
                 return "back";
-            case 2 :
+            case 2:
                 return "left";
-            case 3 :
+            case 3:
                 return "right";
-            case 4 :
+            case 4:
                 return "top";
-            case 5 :
+            case 5:
                 return "bot";
             default:
                 return "ops somting went wront";
@@ -170,47 +164,45 @@ public class TowerOfCubes10051 {
         }
         return 100;
     }
+}
+class Cube implements Comparable<Cube> {
+    int wight; //wight and as well ID.
+    Integer[] cubeColors = new Integer[6]; // 0==front,1==back,2=left,3==right,4==top,5==bot
 
-    static class Cube implements Comparable<Cube> {
-        int wight; //wight and as well ID.
-        Integer[] cubeColors = new Integer[6]; // 0==front,1==back,2=left,3==right,4==top,5==bot
+    @Override
+    public int compareTo(Cube o) {
+        return Integer.compare(wight, o.wight);
+    }
+}
 
-        @Override
-        public int compareTo(Cube o) {
-            return Integer.compare(wight, o.wight);
-        }
+class TowerCubs {
+    int standsOn;
+    int cubeId;
+    int size;
+
+    TowerCubs(int standOn, int cubeId) {
+        this.standsOn = standOn;
+        this.cubeId = cubeId;
+        size = 1;
+    }
+}
+
+class Tower {
+    ArrayList<TowerCubs> towerCubs;
+    public int nextTowerColor;
+
+    Tower(Tower tower) {
+        this.towerCubs = new ArrayList<>(tower.towerCubs);
+        nextTowerColor = tower.nextTowerColor;
     }
 
-    static class TowerCubs {
-        int standsOn;
-        int cubeId;
-        int size;
-
-        TowerCubs(int standOn, int cubeId) {
-            this.standsOn = standOn;
-            this.cubeId = cubeId;
-            size = 1;
-        }
+    Tower() {
+        towerCubs = new ArrayList<>();
     }
 
-    static class Tower {
-        ArrayList<TowerCubs> towerCubs;
-        public int nextTowerColor;
-
-        Tower(Tower tower) {
-            this.towerCubs = new ArrayList<>(tower.towerCubs);
-            nextTowerColor = tower.nextTowerColor;
-        }
-
-        Tower() {
-            towerCubs = new ArrayList<>();
-        }
-
-        public void add(TowerCubs towerCube, int nextTowerColor) {
-            towerCubs.add(towerCube);
-            this.nextTowerColor = nextTowerColor;
-        }
-
+    public void add(TowerCubs towerCube, int nextTowerColor) {
+        towerCubs.add(towerCube);
+        this.nextTowerColor = nextTowerColor;
     }
 
 }
