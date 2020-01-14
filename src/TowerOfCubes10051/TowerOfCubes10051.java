@@ -1,5 +1,8 @@
+import sun.security.x509.InvalidityDateExtension;
+
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 
 @SuppressWarnings("WrongPackageStatement")
@@ -12,7 +15,7 @@ class Main {
 }
 
 
-public class TowerOfCubes10051 {
+class TowerOfCubes10051 {
 
     String readLn(int maxLg)  // utility function to read from stdin
     {
@@ -40,14 +43,13 @@ public class TowerOfCubes10051 {
         int currentCasse = 0;
         int numberOfcubes = 0;
         int addedCubs = 0;
-        boolean isSpcae = false;
         while ((input = readLn(255)) != null) {
             if (!input.isEmpty()) {
                 if (numberOfcubes == 0) {
                     currentCasse++;
                     numberOfcubes = Integer.parseInt(input);
                     if (numberOfcubes == 0) {
-                        return;
+                        break;
                     }
                     System.out.println("Case #" + currentCasse);
                     cubs = new Cube[numberOfcubes];
@@ -58,13 +60,20 @@ public class TowerOfCubes10051 {
                     for (int i = 0; i < cubeColors.length; i++) {
                         c.cubeColors[i] = Integer.parseInt(cubeColors[i]);
                     }
+                    if (cubeColors.length!=6){
+                        throw new IllegalArgumentException();
+                    }
                     cubs[addedCubs] = c;
                     addedCubs++;
                     if (addedCubs == numberOfcubes) {
                         numberOfcubes = 0;
                         addedCubs = 0;
-                        //calc(cubs);
-                        isSpcae = true;
+                        for (Cube q:
+                             cubs) {
+                            int test=q.cubeColors[5];
+                            int test2 =q.cubeColors.length;
+                        }
+                        calc(cubs);
                     }
 
                 }
@@ -73,21 +82,31 @@ public class TowerOfCubes10051 {
     }
 
     void calc(Cube[] cubs) {
-        Tower[] towers = new Tower[100];
-
+        Tower[] towers = new Tower[101];
         for (Cube cube : cubs) {
+
             ArrayList<Tower> newTowers = new ArrayList<>();
             for (int i = 0; i < 6; i++) {
-                Tower towerTuUpdat = towers[cube.cubeColors[i]];
-                Tower newTower;
-                if (towerTuUpdat == null) {
-                    newTower = new Tower();
-                } else {
-                    newTower = new Tower(towerTuUpdat);
-                }
-                TowerCubs newTowerCubs = new TowerCubs(i, cube.wight);
-                newTower.add(newTowerCubs, cube.cubeColors[getOpositSide(i)]);
-                newTowers.add(newTower);
+                int temp = cube.cubeColors.length;
+
+                    Tower towerTuUpdat = towers[cube.cubeColors[i]];
+                    Tower newTower;
+                    if (towerTuUpdat == null) {
+                        newTower = new Tower();
+                    } else {
+                        newTower = new Tower(towerTuUpdat);
+                    }
+
+                    /*Temp t= new Temp();*/
+
+                    TowerCubs newTowerCubs = new TowerCubs(i,cube.wight);
+                    newTower.add(newTowerCubs, cube.cubeColors[getOpositSide(i)]);
+
+                    newTowers.add(newTower);
+
+
+
+
             }
             for (Tower tower :
                     newTowers) {
@@ -112,7 +131,6 @@ public class TowerOfCubes10051 {
             }
 
         }
-
         System.out.println(largesTower.towerCubs.size());
         for (int i = 0; i < largesTower.towerCubs.size(); i++) {
             System.out.println(largesTower.towerCubs.get(i).cubeId + " " + getPrintDirection(largesTower.towerCubs.get(i).standsOn));
@@ -134,7 +152,7 @@ public class TowerOfCubes10051 {
             case 4:
                 return "top";
             case 5:
-                return "bot";
+                return "bottom";
             default:
                 return "ops somting went wront";
 
@@ -164,45 +182,50 @@ public class TowerOfCubes10051 {
         }
         return 100;
     }
-}
-class Cube implements Comparable<Cube> {
-    int wight; //wight and as well ID.
-    Integer[] cubeColors = new Integer[6]; // 0==front,1==back,2=left,3==right,4==top,5==bot
 
-    @Override
-    public int compareTo(Cube o) {
-        return Integer.compare(wight, o.wight);
-    }
-}
+    class Temp {
 
-class TowerCubs {
-    int standsOn;
-    int cubeId;
-    int size;
-
-    TowerCubs(int standOn, int cubeId) {
-        this.standsOn = standOn;
-        this.cubeId = cubeId;
-        size = 1;
-    }
-}
-
-class Tower {
-    ArrayList<TowerCubs> towerCubs;
-    public int nextTowerColor;
-
-    Tower(Tower tower) {
-        this.towerCubs = new ArrayList<>(tower.towerCubs);
-        nextTowerColor = tower.nextTowerColor;
     }
 
-    Tower() {
-        towerCubs = new ArrayList<>();
+    class Cube implements Comparable<Cube> {
+        int wight; //wight and as well ID.
+        Integer[] cubeColors = new Integer[6]; // 0==front,1==back,2=left,3==right,4==top,5==bot
+
+        @Override
+        public int compareTo(Cube o) {
+            return Integer.compare(wight, o.wight);
+        }
     }
 
-    public void add(TowerCubs towerCube, int nextTowerColor) {
-        towerCubs.add(towerCube);
-        this.nextTowerColor = nextTowerColor;
+    class TowerCubs {
+        int standsOn;
+        int cubeId;
+        int size;
+
+        TowerCubs(int standOn, int cubeId) {
+            this.standsOn = standOn;
+            this.cubeId = cubeId;
+            size = 1;
+        }
     }
 
+    class Tower {
+        ArrayList<TowerCubs> towerCubs;
+        public int nextTowerColor;
+
+        Tower(Tower tower) {
+            this.towerCubs = new ArrayList<>(tower.towerCubs);
+            nextTowerColor = tower.nextTowerColor;
+        }
+
+        Tower() {
+            towerCubs = new ArrayList<>();
+        }
+
+        public void add(TowerCubs towerCube, int nextTowerColor) {
+            towerCubs.add(towerCube);
+            this.nextTowerColor = nextTowerColor;
+        }
+
+    }
 }
