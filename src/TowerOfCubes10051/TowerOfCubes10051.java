@@ -49,7 +49,7 @@ class TowerOfCubes10051 {
                     currentCasse++;
                     numberOfcubes = Integer.parseInt(input);
                     if (numberOfcubes == 0) {
-                        break;
+                        return;
                     }
                     System.out.println("Case #" + currentCasse);
                     cubs = new Cube[numberOfcubes];
@@ -60,18 +60,13 @@ class TowerOfCubes10051 {
                     for (int i = 0; i < cubeColors.length; i++) {
                         c.cubeColors[i] = Integer.parseInt(cubeColors[i]);
                     }
-                    if (cubeColors.length!=6){
-                        throw new IllegalArgumentException();
-                    }
                     cubs[addedCubs] = c;
                     addedCubs++;
                     if (addedCubs == numberOfcubes) {
                         numberOfcubes = 0;
                         addedCubs = 0;
-                        for (Cube q:
-                             cubs) {
-                            int test=q.cubeColors[5];
-                            int test2 =q.cubeColors.length;
+                        for (Cube q :
+                                cubs) {
                         }
                         calc(cubs);
                     }
@@ -84,32 +79,23 @@ class TowerOfCubes10051 {
     void calc(Cube[] cubs) {
         Tower[] towers = new Tower[101];
         for (Cube cube : cubs) {
-
             ArrayList<Tower> newTowers = new ArrayList<>();
             for (int i = 0; i < 6; i++) {
-                int temp = cube.cubeColors.length;
-
-                    Tower towerTuUpdat = towers[cube.cubeColors[i]];
+                Tower towerToUpdate = towers[cube.cubeColors[i]];
+                if (towerToUpdate.towerCubs.size()<towers[getOpositSide(cube.cubeColors[i])].towerCubs.size()) {
                     Tower newTower;
-                    if (towerTuUpdat == null) {
+                    if (towerToUpdate == null) {
                         newTower = new Tower();
                     } else {
-                        newTower = new Tower(towerTuUpdat);
+                        newTower = new Tower(towerToUpdate);
                     }
-
-                    /*Temp t= new Temp();*/
-
-                    TowerCubs newTowerCubs = new TowerCubs(i,cube.wight);
+                    TowerCubs newTowerCubs = new TowerCubs(i, cube.wight);
                     newTower.add(newTowerCubs, cube.cubeColors[getOpositSide(i)]);
-
                     newTowers.add(newTower);
-
-
-
+                }
 
             }
-            for (Tower tower :
-                    newTowers) {
+            for (Tower tower :  newTowers) {
                 Tower oldTower = towers[tower.nextTowerColor];
                 if (oldTower == null) {
                     towers[tower.nextTowerColor] = tower;
@@ -120,13 +106,12 @@ class TowerOfCubes10051 {
         }
 
         Tower largesTower = null;
-        int largestTowerSicze = 0;
-        for (Tower tower :
-                towers) {
+        int largestTowerSize = 0;
+        for (Tower tower :  towers) {
             if (tower != null) {
-                if (largestTowerSicze < tower.towerCubs.size()) {
+                if (largestTowerSize < tower.towerCubs.size()) {
                     largesTower = tower;
-                    largestTowerSicze = tower.towerCubs.size();
+                    largestTowerSize = tower.towerCubs.size();
                 }
             }
 
