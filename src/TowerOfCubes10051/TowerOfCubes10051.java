@@ -58,7 +58,7 @@ class TowerOfCubes10051 {
                     Cube c = new Cube();
                     c.wight = addedCubs + 1;
                     for (int i = 0; i < cubeColors.length; i++) {
-                        c.cubeColors[i] = Integer.parseInt(cubeColors[i]);
+                        c.cubeColors[i] = Integer.parseInt(cubeColors[i])-1;
                     }
                     if (cubeColors.length!=6){
                         throw new IllegalArgumentException();
@@ -70,8 +70,6 @@ class TowerOfCubes10051 {
                         addedCubs = 0;
                         for (Cube q:
                                 cubs) {
-                            int test=q.cubeColors[5];
-                            int test2 =q.cubeColors.length;
                         }
                         calc(cubs);
                     }
@@ -82,13 +80,11 @@ class TowerOfCubes10051 {
     }
 
     void calc(Cube[] cubs) {
-        Tower[] towers = new Tower[101];
+        Tower[] towers = new Tower[100];
         for (Cube cube : cubs) {
 
             ArrayList<Tower> newTowers = new ArrayList<>();
             for (int i = 0; i < 6; i++) {
-                int temp = cube.cubeColors.length;
-
                 Tower towerTuUpdate = towers[cube.cubeColors[i]];
                 Tower newTower;
                 if (towerTuUpdate == null) {
@@ -181,10 +177,6 @@ class TowerOfCubes10051 {
                 return 4;
         }
         return 100;
-    }
-
-    class Temp {
-
     }
 
     class Cube implements Comparable<Cube> {
