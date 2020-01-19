@@ -40,19 +40,19 @@ class TowerOfCubes10051 {
     public void start() {
         String input = "";
         Cube[] cubs = null;
-        int currentCasse = 0;
-        int numberOfcubes = 0;
+        int currentCase = 0;
+        int numberOfCubes = 0;
         int addedCubs = 0;
         while ((input = readLn(255)) != null) {
             if (!input.isEmpty()) {
-                if (numberOfcubes == 0) {
-                    currentCasse++;
-                    numberOfcubes = Integer.parseInt(input);
-                    if (numberOfcubes == 0) {
-                        return;
+                if (numberOfCubes == 0) {
+                    currentCase++;
+                    numberOfCubes = Integer.parseInt(input);
+                    if (numberOfCubes == 0) {
+                        break;
                     }
-                    System.out.println("Case #" + currentCasse);
-                    cubs = new Cube[numberOfcubes];
+                    System.out.println("Case #" + currentCase);
+                    cubs = new Cube[numberOfCubes];
                 } else {
                     String[] cubeColors = input.split(" ");
                     Cube c = new Cube();
@@ -60,13 +60,18 @@ class TowerOfCubes10051 {
                     for (int i = 0; i < cubeColors.length; i++) {
                         c.cubeColors[i] = Integer.parseInt(cubeColors[i]);
                     }
+                    if (cubeColors.length!=6){
+                        throw new IllegalArgumentException();
+                    }
                     cubs[addedCubs] = c;
                     addedCubs++;
-                    if (addedCubs == numberOfcubes) {
-                        numberOfcubes = 0;
+                    if (addedCubs == numberOfCubes) {
+                        numberOfCubes = 0;
                         addedCubs = 0;
-                        for (Cube q :
+                        for (Cube q:
                                 cubs) {
+                            int test=q.cubeColors[5];
+                            int test2 =q.cubeColors.length;
                         }
                         calc(cubs);
                     }
@@ -79,23 +84,32 @@ class TowerOfCubes10051 {
     void calc(Cube[] cubs) {
         Tower[] towers = new Tower[101];
         for (Cube cube : cubs) {
+
             ArrayList<Tower> newTowers = new ArrayList<>();
             for (int i = 0; i < 6; i++) {
-                Tower towerToUpdate = towers[cube.cubeColors[i]];
-                if (towerToUpdate.towerCubs.size()<towers[getOpositSide(cube.cubeColors[i])].towerCubs.size()) {
-                    Tower newTower;
-                    if (towerToUpdate == null) {
-                        newTower = new Tower();
-                    } else {
-                        newTower = new Tower(towerToUpdate);
-                    }
-                    TowerCubs newTowerCubs = new TowerCubs(i, cube.wight);
-                    newTower.add(newTowerCubs, cube.cubeColors[getOpositSide(i)]);
-                    newTowers.add(newTower);
+                int temp = cube.cubeColors.length;
+
+                Tower towerTuUpdate = towers[cube.cubeColors[i]];
+                Tower newTower;
+                if (towerTuUpdate == null) {
+                    newTower = new Tower();
+                } else {
+                    newTower = new Tower(towerTuUpdate);
                 }
 
+                /*Temp t= new Temp();*/
+
+                TowerCubs newTowerCubs = new TowerCubs(i,cube.wight);
+                newTower.add(newTowerCubs, cube.cubeColors[getOpositSide(i)]);
+
+                newTowers.add(newTower);
+
+
+
+
             }
-            for (Tower tower :  newTowers) {
+            for (Tower tower :
+                    newTowers) {
                 Tower oldTower = towers[tower.nextTowerColor];
                 if (oldTower == null) {
                     towers[tower.nextTowerColor] = tower;
@@ -106,12 +120,13 @@ class TowerOfCubes10051 {
         }
 
         Tower largesTower = null;
-        int largestTowerSize = 0;
-        for (Tower tower :  towers) {
+        int largestTowerSicze = 0;
+        for (Tower tower :
+                towers) {
             if (tower != null) {
-                if (largestTowerSize < tower.towerCubs.size()) {
+                if (largestTowerSicze < tower.towerCubs.size()) {
                     largesTower = tower;
-                    largestTowerSize = tower.towerCubs.size();
+                    largestTowerSicze = tower.towerCubs.size();
                 }
             }
 
