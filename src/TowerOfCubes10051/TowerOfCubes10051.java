@@ -1,8 +1,5 @@
-import sun.security.x509.InvalidityDateExtension;
-
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 
 
 @SuppressWarnings("WrongPackageStatement")
@@ -15,6 +12,23 @@ class Main {
 }
 
 
+/**
+ * Code Idee
+ * Bei jedem Würfel hat jede Seite eine von 100 Farben. Jeder Würfel muss auf einem Grösseren Würfel stehen. Somit sind 100 unterschiedliche Türme möglich. Nun wird beim Kleinsten begonnen.
+ * Nun wird für jeden Würfel folgendes gemacht.
+ * Es wird den Turm der Entsprechenden Farbe aus der Turmliste Hinausgelesen. Die liste kopiert und der Würfel hinzugefügt. Der Turm erhält eine neue Farbe. Die Farbe auf dem Würfel welche sich auf der Gegenüberliegenden Sete der Ursprünglichen Farbe befindet. Dies wird für alle Seiten gemacht.
+ * Nun sollten 6 neue Türme entstanden sein. Diese 6 Türme müssen nun zu der Allgemeinen Turm liste hinzugefügt werden. Es wird kontrolliert ob der Turm, der bereits diese Farbe hat kleiner ist als der neue Turm. Wenn ja wird dieser Ersetzt dann mit dem nächsten fortgefahren.
+ *
+ * Klassen
+ * Towers:
+ * Sind die Türme welche aus den Würfeln erstellt wurden. Sie beinhalten immer mindestens 1 Würfel und haben immer eine Farbe. Diese Farbe beschreibt welche Würfelfarbe als nächstes zu dem Turm hinzugefügt werden kann.
+ * Cubs:
+ * Dies sind die eingelesenen Würfel mit den 6 Seiten, welche alle eine Farbe haben. Hat auch eine ID
+ * TowerCubs
+ * Dies sind die Würfel, welche zu einem Turm hinzugefügt wurde. Hier ist nur interessant auf welcher Seite sie Stehen und welche ID/Gewicht der Würfel hat.
+ *
+ * @version 2020.01.19
+ */
 class TowerOfCubes10051 {
 
     String readLn(int maxLg)  // utility function to read from stdin
@@ -80,32 +94,33 @@ class TowerOfCubes10051 {
     }
 
     void calc(Cube[] cubs) {
+        //Maximal number of Colors. There can be for each color just 1 tower.
         Tower[] towers = new Tower[100];
         for (Cube cube : cubs) {
-
             ArrayList<Tower> newTowers = new ArrayList<>();
+            //Each cube has 6 sides. Each side could be a new Tower bottom.
             for (int i = 0; i < 6; i++) {
                 Tower towerTuUpdate = towers[cube.cubeColors[i]];
                 Tower newTower;
+                //The cube could be the first cube with this color.
                 if (towerTuUpdate == null) {
                     newTower = new Tower();
                 } else {
                     newTower = new Tower(towerTuUpdate);
                 }
 
-                /*Temp t= new Temp();*/
-
+                //Create a new cube witch can be added to a tower.
                 TowerCubs newTowerCubs = new TowerCubs(i,cube.wight);
-                newTower.add(newTowerCubs, cube.cubeColors[getOpositSide(i)]);
-
+                newTower.add(newTowerCubs, cube.cubeColors[getOboistSide(i)]);
                 newTowers.add(newTower);
 
 
 
 
             }
-            for (Tower tower :
-                    newTowers) {
+
+            //Adds the new towers to the Towers list when the new tower is buggier then the tower in the current color.
+            for (Tower tower : newTowers) {
                 Tower oldTower = towers[tower.nextTowerColor];
                 if (oldTower == null) {
                     towers[tower.nextTowerColor] = tower;
@@ -115,18 +130,20 @@ class TowerOfCubes10051 {
             }
         }
 
+        //Get the largest Tower
         Tower largesTower = null;
-        int largestTowerSicze = 0;
-        for (Tower tower :
-                towers) {
+        int largestTowerSize = 0;
+        for (Tower tower : towers) {
             if (tower != null) {
-                if (largestTowerSicze < tower.towerCubs.size()) {
+                if (largestTowerSize < tower.towerCubs.size()) {
                     largesTower = tower;
-                    largestTowerSicze = tower.towerCubs.size();
+                    largestTowerSize = tower.towerCubs.size();
                 }
             }
 
         }
+
+        //Print the largest possible tower from current case.
         System.out.println(largesTower.towerCubs.size());
         for (int i = 0; i < largesTower.towerCubs.size(); i++) {
             System.out.println(largesTower.towerCubs.get(i).cubeId + " " + getPrintDirection(largesTower.towerCubs.get(i).standsOn));
@@ -161,7 +178,7 @@ class TowerOfCubes10051 {
      * @param site id site
      * @return opposite site.
      */
-    public int getOpositSide(int site) {
+    public int getOboistSide(int site) {
         switch (site) {
             case 0:
                 return 1;
@@ -179,6 +196,9 @@ class TowerOfCubes10051 {
         return 100;
     }
 
+    /**
+     * This are the cubs where each side has a color
+     */
     class Cube implements Comparable<Cube> {
         int wight; //wight and as well ID.
         Integer[] cubeColors = new Integer[6]; // 0==front,1==back,2=left,3==right,4==top,5==bot
@@ -189,18 +209,22 @@ class TowerOfCubes10051 {
         }
     }
 
+    /**
+     * This cubs are added to a Tower here ar only important the color he stands on and the cubeID
+     */
     class TowerCubs {
         int standsOn;
         int cubeId;
-        int size;
 
         TowerCubs(int standOn, int cubeId) {
             this.standsOn = standOn;
             this.cubeId = cubeId;
-            size = 1;
         }
     }
 
+    /**
+     * this is the tower with the cubs witch are in this tower.
+     */
     class Tower {
         ArrayList<TowerCubs> towerCubs;
         public int nextTowerColor;
